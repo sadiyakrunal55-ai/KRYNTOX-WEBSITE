@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="KRYNTOX Digital Studio helps small businesses grow with professional websites, branding, social media designs and photo editing.">
+  <meta name="theme-color" content="#0b1220">
+  <title>KRYNTOX Digital Studio | Websites, Branding & Creative Design</title>
+  <style>
+    :root{--bg:#0b1220;--panel:#111c2e;--panel2:#152238;--gold:#d9b56d;--gold2:#f1d69a;--text:#f5f7fb;--muted:#aab5c6;--line:rgba(255,255,255,.1);--green:#25d366}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{scroll-behavior:smooth}
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    button,input,textarea,select{font:inherit}
+    .container{width:min(1120px,92%);margin:auto}
+    .topbar{border-bottom:1px solid var(--line);background:#080e19}
+    .topbar .container{display:flex;justify-content:space-between;gap:12px;padding:9px 0;color:var(--muted);font-size:.82rem}
+    header{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+    .nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.04em}
+    .brandmark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold2),#b88c3e);color:#101827;font-weight:900;font-size:1.1rem}
+    .brand small{display:block;color:var(--gold);font-size:.63rem;letter-spacing:.2em;margin-top:1px}
+    .navlinks{display:flex;align-items:center;gap:25px;color:#d5dbea;font-size:.92rem}
+    .navlinks a:hover{color:var(--gold2)}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 19px;border-radius:10px;font-weight:750;border:1px solid transparent;transition:.2s;cursor:pointer}
+    .btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111827}
+    .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 28px #d9b56d2b}
+    .btn-outline{border-color:#65738a;color:var(--text);background:transparent}
+    .btn-outline:hover{border-color:var(--gold);color:var(--gold2)}
+    .menu-btn{display:none;background:none;color:white;border:1px solid var(--line);border-radius:9px;padding:8px 11px}
+    .hero{padding:88px 0 78px;position:relative;overflow:hidden}
+    .hero:before{content:"";position:absolute;width:500px;height:500px;border-radius:50%;background:#c69b4a12;filter:blur(30px);right:-180px;top:-170px}
+    .hero-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:55px;align-items:center;position:relative}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--gold2);font-size:.82rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+    .eyebrow:before{content:"";width:25px;height:1px;background:var(--gold)}
+    h1{font-size:clamp(2.65rem,5.7vw,5rem);line-height:1.05;letter-spacing:-.045em;margin:19px 0}
+    h1 span{color:var(--gold2)}
+    .lead{font-size:1.08rem;color:var(--muted);max-width:590px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:29px}
+    .trustline{display:flex;gap:22px;flex-wrap:wrap;margin-top:30px;color:#c1cada;font-size:.86rem}
+    .trustline span:before{content:"✓";color:var(--gold);font-weight:900;margin-right:7px}
+    .hero-card{background:linear-gradient(145deg,#192943,#101a2b);border:1px solid #d9b56d45;border-radius:24px;padding:25px;box-shadow:0 25px 70px #0006;transform:rotate(1deg)}
+    .mock-window{border:1px solid #ffffff20;border-radius:15px;overflow:hidden;background:#0c1422}
+    .mock-head{padding:12px 15px;border-bottom:1px solid var(--line);display:flex;gap:6px}
+    .dot{width:8px;height:8px;border-radius:50%;background:#d9b56d}
+    .mock-body{padding:25px}
+    .mock-label{color:var(--gold);font-size:.7rem;letter-spacing:.18em;font-weight:800}
+    .mock-title{font-size:1.8rem;line-height:1.15;margin:10px 0}
+    .mock-lines{height:7px;background:#34445d;border-radius:9px;margin:9px 0;width:85%}
+    .mock-lines.short{width:58%}
+    .mock-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:22px}
+    .mock-tile{height:85px;border-radius:10px;background:linear-gradient(135deg,#243957,#17263b);border:1px solid #ffffff12;padding:12px;color:var(--gold2);font-size:.8rem}
+    section{padding:78px 0}
+    .section-head{text-align:center;max-width:700px;margin:0 auto 42px}
+    .section-head h2{font-size:clamp(2rem,4vw,3rem);line-height:1.15;margin:12px 0}
+    .section-head p{color:var(--muted)}
+    .services{display:grid;grid-template-columns:repeat(4,1fr);gap:17px}
+    .service{padding:24px 20px;background:linear-gradient(160deg,var(--panel),#0e1726);border:1px solid var(--line);border-radius:16px;transition:.25s}
+    .service:hover{transform:translateY(-5px);border-color:#d9b56d80}
+    .service-icon{width:46px;height:46px;display:grid;place-items:center;border-radius:13px;background:#d9b56d18;color:var(--gold2);font-size:1.35rem;margin-bottom:17px}
+    .service h3{font-size:1.08rem;margin-bottom:8px}
+    .service p{color:var(--muted);font-size:.9rem;min-height:72px}
+    .service a{display:inline-block;color:var(--gold2);font-weight:750;font-size:.88rem;margin-top:15px}
+    .about-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center}
+    .about-panel{background:linear-gradient(145deg,#1b2a42,#101827);border:1px solid var(--line);padding:32px;border-radius:22px}
+    .about-panel .big{font-size:4rem;color:var(--gold2);font-weight:900;line-height:1}
+    .about-panel p{color:var(--muted);margin-top:12px}
+    .about-copy h2{font-size:clamp(2rem,4vw,2.8rem);line-height:1.15;margin:12px 0 18px}
+    .about-copy p{color:var(--muted);margin-bottom:15px}
+    .checks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
+    .checks span{font-size:.9rem;color:#e3e8f1}.checks span:before{content:"✓";color:var(--gold);margin-right:8px}
+    .process{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+    .step{padding:22px;border:1px solid var(--line);border-radius:15px;background:var(--panel)}
+    .step b{font-size:1.8rem;color:var(--gold);display:block;margin-bottom:9px}
+    .step p{font-size:.9rem;color:var(--muted);margin-top:6px}
+    .portfolio-note{padding:30px;border:1px dashed #b99555;border-radius:17px;background:#d9b56d0b;text-align:center;color:var(--muted)}
+    .portfolio-note strong{display:block;color:var(--gold2);font-size:1.15rem;margin-bottom:6px}
+    .pricing{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
+    .price-card{padding:23px 19px;background:var(--panel);border:1px solid var(--line);border-radius:16px}
+    .price-card h3{font-size:1rem;min-height:48px}
+    .price{font-size:1.9rem;font-weight:900;color:var(--gold2);margin:10px 0}
+    .price-card p{font-size:.84rem;color:var(--muted);min-height:56px}
+    .price-card .btn{width:100%;margin-top:15px;padding:10px;font-size:.86rem}
+    .note{font-size:.82rem;color:var(--muted);margin-top:15px;text-align:center}
+    .contact-wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:25px}
+    .contact-info,.contact-form{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:27px}
+    .contact-info h3,.contact-form h3{font-size:1.35rem;margin-bottom:10px}
+    .contact-info p{color:var(--muted);margin-bottom:22px}
+    .contact-item{padding:13px 0;border-top:1px solid var(--line);color:#dce3ef}
+    .contact-item small{display:block;color:var(--muted)}
+    label{display:block;font-size:.87rem;color:#dce3ef;margin:0 0 6px}
+    input,textarea,select{width:100%;background:#0b1423;border:1px solid #34445b;color:white;border-radius:9px;padding:12px 13px;margin-bottom:14px;outline:none}
+    input:focus,textarea:focus,select:focus{border-color:var(--gold)}
+    textarea{min-height:105px;resize:vertical}
+    .contact-form .btn{width:100%}
+    footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.86rem}
+    .footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
+    .wa-float{position:fixed;right:19px;bottom:19px;z-index:30;width:58px;height:58px;border-radius:50%;background:var(--green);color:#062b14;display:grid;place-items:center;font-size:1.55rem;box-shadow:0 8px 28px #0008;font-weight:900}
+    .wa-float:hover{transform:scale(1.06)}
+    @media(max-width:900px){.hero-grid,.about-grid,.contact-wrap{grid-template-columns:1fr}.hero{padding-top:60px}.hero-card{max-width:570px}.services,.pricing{grid-template-columns:repeat(2,1fr)}.process{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:650px){.topbar .container{font-size:.72rem}.nav{height:68px}.menu-btn{display:block}.navlinks{display:none;position:absolute;top:68px;left:0;right:0;background:#0b1220;padding:18px 4%;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start;gap:17px}.navlinks.open{display:flex}.nav-cta{display:none}.hero{padding:54px 0}.hero-grid{gap:35px}h1{font-size:2.8rem}.hero-card{padding:15px}.services,.pricing{grid-template-columns:1fr}.service p,.price-card p{min-height:0}.process{grid-template-columns:1fr 1fr}section{padding:60px 0}.checks{grid-template-columns:1fr}.about-panel{padding:25px}.footer-inner{flex-direction:column}}
+  </style>
+</head>
+<body>
+  <div class="topbar"><div class="container"><span>Creative digital solutions for growing businesses</span><span>Jamnagar, Gujarat · India</span></div></div>
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#home"><span class="brandmark">K</span><span>KRYNTOX<small>DESIGN • BUILD • GROW</small></span></a>
+      <button class="menu-btn" id="menuBtn" aria-label="Open navigation">☰</button>
+      <nav class="navlinks" id="navLinks"><a href="#home">Home</a><a href="#services">Services</a><a href="#about">About</a><a href="#process">Process</a><a href="#pricing">Pricing</a><a href="#contact">Contact</a></nav>
+      <a class="btn btn-gold nav-cta" href="https://wa.me/917096620842?text=Hello%20KRYNTOX!%20I%20am%20interested%20in%20your%20digital%20services.%20Please%20share%20your%20services%20and%20pricing%20details." target="_blank" rel="noopener">Get a Quote ↗</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="container hero-grid">
+        <div>
+          <div class="eyebrow">Your Digital Growth Partner</div>
+          <h1>Make Your Business <span>Stand Out.</span></h1>
+          <p class="lead">We help shops, salons and growing businesses build a stronger digital presence with professional websites, creative branding and eye-catching designs.</p>
+          <div class="hero-actions"><a class="btn btn-gold" href="#contact">Start Your Project →</a><a class="btn btn-outline" href="#services">Explore Services</a></div>
+          <div class="trustline"><span>Mobile-friendly websites</span><span>Clear communication</span><span>Made for small businesses</span></div>
+        </div>
+        <div class="hero-card">
+          <div class="mock-window"><div class="mock-head"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div><div class="mock-body"><div class="mock-label">KRYNTOX</div><div class="mock-title">Your next big<br><span style="color:#e8c982">digital move.</span></div><div class="mock-lines"></div><div class="mock-lines short"></div><div class="mock-tiles"><div class="mock-tile">01<br>Web Design</div><div class="mock-tile">02<br>Brand Identity</div><div class="mock-tile">03<br>Social Media</div><div class="mock-tile">04<br>Photo Editing</div></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="services">
+      <div class="container"><div class="section-head"><div class="eyebrow">What We Do</div><h2>Digital Services That Move You Forward</h2><p>Practical creative services to help your business look professional and connect with more customers.</p></div>
+        <div class="services">
+          <article class="service"><div class="service-icon">▣</div><h3>Business Website Design</h3><p>Responsive websites for shops, salons and local businesses, with clear service details and WhatsApp contact.</p><a href="#contact" data-service="Business Website Design">Discuss this service →</a></article>
+          <article class="service"><div class="service-icon">✦</div><h3>Logo & Branding</h3><p>Clean logo concepts and basic brand visuals to give your business a consistent identity.</p><a href="#contact" data-service="Logo & Branding">Discuss this service →</a></article>
+          <article class="service"><div class="service-icon">▤</div><h3>Social Media Design</h3><p>Promotional posts, offers, banners and creative designs for your social media pages.</p><a href="#contact" data-service="Social Media Design">Discuss this service →</a></article>
+          <article class="service"><div class="service-icon">◎</div><h3>Photo Editing</h3><p>Photo enhancement, background cleanup and creative edits for personal or business use.</p><a href="#contact" data-service="Photo Editing">Discuss this service →</a></article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container about-grid">
+        <div class="about-panel"><div class="big">KRYNTOX.</div><h3 style="font-size:1.35rem;margin-top:10px">Small Business. Big Digital Presence.</h3><p>Thoughtful design, simple communication and solutions built around your business needs.</p></div>
+        <div class="about-copy"><div class="eyebrow">About The Studio</div><h2>Helping Businesses Build a Powerful Digital Presence.</h2><p>KRYNTOX Digital Studio is a creative digital service studio focused on helping small and growing businesses present themselves better online.</p><p>From a business website to a promotional design, our goal is to make the process clear, practical and easy to understand.</p><div class="checks"><span>Personal project support</span><span>Responsive layouts</span><span>Clear scope before work</span><span>WhatsApp communication</span></div></div>
+      </div>
+    </section>
+
+    <section id="process">
+      <div class="container"><div class="section-head"><div class="eyebrow">How It Works</div><h2>A Simple, Clear Process</h2><p>Know what happens next before your project begins.</p></div>
+        <div class="process"><div class="step"><b>01</b><h3>Tell Us Your Need</h3><p>Share your business details, goals and the service you need.</p></div><div class="step"><b>02</b><h3>Get a Plan & Quote</h3><p>We discuss scope, timeline, revisions and pricing before starting.</p></div><div class="step"><b>03</b><h3>Design & Review</h3><p>We prepare the work and share a preview for your feedback.</p></div><div class="step"><b>04</b><h3>Final Delivery</h3><p>After approval and agreed payment, you receive the final files or website.</p></div></div>
+      </div>
+    </section>
+
+    <section id="portfolio">
+      <div class="container"><div class="section-head"><div class="eyebrow">Selected Work</div><h2>Portfolio Coming Soon</h2><p>We are preparing sample projects to show the quality and style of our work.</p></div><div class="portfolio-note"><strong>Want to see a sample for your business?</strong>Tell us what kind of business you run. We can discuss a suitable demo concept before you place an order.</div></div>
+    </section>
+
+    <section id="pricing">
+      <div class="container"><div class="section-head"><div class="eyebrow">Starting Packages</div><h2>Simple Starting Prices</h2><p>Final quotes depend on the project scope, features and delivery requirements.</p></div>
+        <div class="pricing">
+          <article class="price-card"><h3>Basic Business Website</h3><div class="price">₹2,999<span style="font-size:.8rem;color:#aab5c6">+</span></div><p>Starting price for a simple business website. Domain and hosting are extra.</p><a class="btn btn-outline" href="#contact" data-service="Basic Business Website">Enquire Now</a></article>
+          <article class="price-card"><h3>Logo Design</h3><div class="price">₹499<span style="font-size:.8rem;color:#aab5c6">+</span></div><p>Starting price for a basic logo concept. Scope and revisions agreed first.</p><a class="btn btn-outline" href="#contact" data-service="Logo Design">Enquire Now</a></article>
+          <article class="price-card"><h3>Social Media Post</h3><div class="price">₹199<span style="font-size:.8rem;color:#aab5c6">+</span></div><p>Starting price for one static promotional design.</p><a class="btn btn-outline" href="#contact" data-service="Social Media Post">Enquire Now</a></article>
+          <article class="price-card"><h3>Photo Editing</h3><div class="price">₹99<span style="font-size:.8rem;color:#aab5c6">+</span></div><p>Starting price per simple edit. Complex edits are quoted separately.</p><a class="btn btn-outline" href="#contact" data-service="Photo Editing">Enquire Now</a></article>
+        </div>
+        <p class="note">Indicative starting prices only. Confirm the exact deliverables, timeline, revisions and payment terms in writing before work begins.</p>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container"><div class="section-head"><div class="eyebrow">Let's Talk</div><h2>Tell Us About Your Project</h2><p>Send your requirements on WhatsApp. We will discuss the next steps.</p></div>
+        <div class="contact-wrap">
+          <div class="contact-info"><h3>Start a Conversation</h3><p>Have a business website or design requirement? Contact the studio directly.</p><div class="contact-item">WhatsApp<small>+91 70966 20842</small></div><div class="contact-item">Service Area<small>Jamnagar, Gujarat · Online projects across India</small></div><div class="contact-item">Working Style<small>Project scope and quote confirmed before starting</small></div><a class="btn btn-gold" style="width:100%;margin-top:18px" href="https://wa.me/917096620842?text=Hello%20KRYNTOX!%20I%20am%20interested%20in%20your%20digital%20services.%20Please%20share%20your%20services%20and%20pricing%20details." target="_blank" rel="noopener">Chat on WhatsApp ↗</a></div>
+          <form class="contact-form" id="contactForm"><h3>Quick Project Enquiry</h3><label for="name">Your Name</label><input id="name" name="name" placeholder="Enter your name" required><label for="business">Business Name</label><input id="business" name="business" placeholder="Your shop / business name"><label for="service">Service Required</label><select id="service" name="service" required><option value="">Choose a service</option><option>Business Website Design</option><option>Logo & Branding</option><option>Social Media Design</option><option>Photo Editing</option><option>Other</option></select><label for="message">Project Details</label><textarea id="message" name="message" placeholder="Tell us briefly what you need..."></textarea><button class="btn btn-gold" type="submit">Send Enquiry on WhatsApp ↗</button></form>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer><div class="container footer-inner"><span>© <span id="year"></span> KRYNTOX Digital Studio. All rights reserved.</span><span>Designed to help your business grow.</span></div></footer>
+  <a class="wa-float" href="https://wa.me/917096620842?text=Hello%20KRYNTOX" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">☏</a>
+  <script>
+    const menuBtn=document.getElementById('menuBtn');
+    const navLinks=document.getElementById('navLinks');
+    menuBtn.addEventListener('click',()=>navLinks.classList.toggle('open'));
+    navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));
+    document.getElementById('year').textContent=new Date().getFullYear();
+    document.querySelectorAll('[data-service]').forEach(link=>link.addEventListener('click',()=>{
+      const service=document.getElementById('service');
+      const wanted=link.dataset.service;
+      [...service.options].forEach(o=>{if(o.text===wanted)service.value=o.value;});
+    }));
+    document.getElementById('contactForm').addEventListener('submit',function(e){
+      e.preventDefault();
+      const name=document.getElementById('name').value.trim();
+      const business=document.getElementById('business').value.trim();
+      const service=document.getElementById('service').value;
+      const message=document.getElementById('message').value.trim();
+      const text=`Hello KRYNTOX Digital Studio!%0AName: ${encodeURIComponent(name)}%0ABusiness: ${encodeURIComponent(business||'Not provided')}%0AService: ${encodeURIComponent(service)}%0ADetails: ${encodeURIComponent(message||'Please contact me to discuss.')}`;
+      window.open(`https://wa.me/917096620842?text=${text}`,'_blank','noopener');
+    });
+  </script>
+</body>
+</html>
