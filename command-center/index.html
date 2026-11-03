@@ -1,6 +1,132 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KRYNTOX AI HQ</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#080b12;color:#f4f6ff;font-family:Arial,sans-serif}
+header{background:#111a29;padding:20px;border-bottom:1px solid #293750;position:sticky;top:0;z-index:5}
+.logo{font-size:25px;font-weight:900;letter-spacing:2px}
+.logo span{color:#65b5ff}
+header small{color:#91a4be}
+main{max-width:1050px;margin:auto;padding:20px}
+h2{font-size:20px;margin:25px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.card{background:#111a29;border:1px solid #293750;border-radius:14px;padding:16px}
+button{cursor:pointer;color:white}
+.agent{width:100%;text-align:left;display:flex;align-items:center;gap:12px;min-height:90px}
+.agent:hover,.card:hover{border-color:#65b5ff}
+.agent h3{font-size:14px;margin:5px 0}
+.agent p,.muted{font-size:12px;color:#9baec6;margin:4px 0}
+.emoji{font-size:26px}
+.number{font-size:28px;color:#75baff;font-weight:bold;margin:9px 0}
+small{color:#9baec6}
+.btn{background:#1675d1;border:0;border-radius:9px;padding:12px 16px;margin:5px 3px 5px 0;font-weight:bold}
+.secondary{background:#202d41}
+input,textarea,select{width:100%;padding:12px;margin:7px 0;background:#080f1b;color:white;border:1px solid #34445c;border-radius:8px}
+.page{display:none}
+.page.active{display:block}
+.back{background:#202d41;border:1px solid #3b4d68;padding:10px 15px;border-radius:8px;margin-bottom:15px}
+.tag{color:#ffc66d;font-size:11px}
+.wide{grid-column:1/-1}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:center}
+hr{border:0;border-top:1px solid #293750;margin:16px 0}
+footer{text-align:center;color:#8293a9;padding:30px;font-size:12px}
+@media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
+</style>
+</head>
+<body>
+<header>
+ <div class="logo">KRYNTOX<span> HQ</span></div>
+ <small>GENIUS AI BUSINESS COMMAND CENTER</small>
+</header>
+<main>
+<section id="home" class="page active">
+ <div class="row">
+  <div><h2>Monthly Overview</h2><small>Owner Dashboard</small></div>
+  <span class="tag">● DEMO MODE</span>
+ </div>
+ <div class="grid">
+  <div class="card"><small>LEADS TARGET</small><div class="number">220</div><small>10 per day × 22 days</small></div>
+  <div class="card"><small>DEALS CLOSED</small><div class="number" id="deals">0</div><small>Demo records</small></div>
+  <div class="card"><small>REVENUE</small><div class="number" id="revenue">₹0</div><small>Demo records</small></div>
+  <div class="card"><small>PROJECTS</small><div class="number">0</div><small>Verified deliveries</small></div>
+ </div>
+ <h2>Our 8 Genius Agents</h2>
+ <div class="grid" id="agents"></div>
+ <h2>Business Systems</h2>
+ <div class="grid">
+  <button class="card agent" onclick="show('clients')"><span class="emoji">🎯</span><div><h3>CLIENT HUNTER X</h3><p>Open Lead CRM →</p></div></button>
+  <button class="card agent" onclick="show('security')"><span class="emoji">🛡️</span><div><h3>SECURITYZ+</h3><p>Security Center →</p></div></button>
+  <button class="card agent" onclick="show('reports')"><span class="emoji">📊</span><div><h3>MONTHLY REPORT</h3><p>View performance →</p></div></button>
+  <button class="card agent" onclick="show('projects')"><span class="emoji">📁</span><div><h3>PROJECT CENTER</h3><p>Project management →</p></div></button>
+ </div>
+</section>
+<section id="agent" class="page">
+ <button class="back" onclick="show('home')">← Back to Home</button>
+ <div class="card">
+  <div class="emoji" id="aemoji"></div>
+  <h2 id="aname"></h2>
+  <p id="adesc" class="muted"></p>
+  <hr><h3>Responsibilities</h3>
+  <p id="atasks"></p>
+  <div class="tag">STATUS: DATABASE TASK SAVE ENABLED</div>
+  <hr><h3>Task Notes</h3>
+  <textarea id="tasknote" placeholder="Write a task or instruction..."></textarea>
+  <button class="btn" id="saveTaskBtn" onclick="saveNote()">Save Task to Database</button>
+  <p id="notesaved" class="muted" role="status" aria-live="polite"></p>
+ </div>
+</section>
+<section id="clients" class="page">
+ <button class="back" onclick="show('home')">← Back to Home</button>
+ <h2>CLIENT HUNTER X — CRM</h2>
+ <div class="card">
+  <div class="tag">DEMO CRM · NO AUTOMATIC OUTREACH</div>
+  <input id="cname" placeholder="Business name">
+  <input id="cphone" placeholder="Contact details">
+  <select id="cstage"><option>New Lead</option><option>Contacted</option><option>Interested</option><option>Negotiation</option><option>Won</option><option>Lost</option></select>
+  <button class="btn" onclick="addLead()">Add Lead</button>
+ </div>
+ <h2>Lead Pipeline</h2><div id="leadlist" class="grid"></div>
+</section>
+<section id="security" class="page">
+ <button class="back" onclick="show('home')">← Back to Home</button>
+ <h2>SECURITYZ+ CENTER</h2>
+ <div class="card">
+  <div class="emoji">🛡️</div><h3>Security Architecture</h3>
+  <p>Authentication, access control, API protection, backups and threat monitoring.</p><hr>
+  <p>Admin authentication <span class="tag">NOT CONNECTED</span></p>
+  <p>API monitoring <span class="tag">NOT CONNECTED</span></p>
+  <p>Database protection <span class="tag">NOT CONNECTED</span></p>
+  <p>Backup system <span class="tag">NOT CONNECTED</span></p>
+  <p class="muted">This page does not perform live security scans.</p>
+ </div>
+</section>
+<section id="reports" class="page">
+ <button class="back" onclick="show('home')">← Back to Home</button><h2>Monthly Performance</h2>
+ <div class="grid">
+  <div class="card"><small>LEADS</small><div class="number" id="rleads">0</div></div>
+  <div class="card"><small>DEALS</small><div class="number" id="rdeals">0</div></div>
+  <div class="card"><small>REVENUE</small><div class="number" id="rrevenue">₹0</div></div>
+  <div class="card"><small>LEAD TARGET</small><div class="number">220</div></div>
+ </div>
+ <p class="muted">Figures shown here are locally saved demo records, not actual business results.</p>
+</section>
+<section id="projects" class="page">
+ <button class="back" onclick="show('home')">← Back to Home</button><h2>Project Center</h2>
+ <div class="card">
+  <input id="pname" placeholder="Project name">
+  <select id="pstatus"><option>Planning</option><option>In Progress</option><option>Testing</option><option>Delivered</option></select>
+  <button class="btn" onclick="addProject()">Add Project</button>
+ </div>
+ <div id="projectlist" class="grid"></div>
+</section>
+</main>
+<footer>KRYNTOX © 2026 · BUILD SMART. BUILD SECURE.</footer>
 <script>
-const data = [
+const data=[
 ["👑","COMMANDER AI","Team Strategy and Coordination","Planning, task allocation, workflow supervision and final reporting."],
 ["🛡️","SECURITYZ+","Cyber Security","Access protection, threat analysis, security reviews and backup planning."],
 ["💻","DEVELOPER PRO","Software Engineering","Website development, app development, coding and testing."],
@@ -10,167 +136,76 @@ const data = [
 ["🎯","CLIENT HUNTER X","Sales Intelligence","Lead qualification, outreach planning, pipeline and follow-ups."],
 ["🎧","SUPPORT GENIUS","Customer Experience","Customer service, issue tracking and feedback management."]
 ];
-
-function loadData(key) {
- try {
-  const value = JSON.parse(localStorage.getItem(key) || "[]");
-  return Array.isArray(value) ? value : [];
- } catch {
-  return [];
- }
+let leads=JSON.parse(localStorage.getItem("kx_leads")||"[]");
+let projects=JSON.parse(localStorage.getItem("kx_projects")||"[]");
+function show(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ refresh();window.scrollTo(0,0);
 }
-
-let leads = loadData("kx_leads");
-let projects = loadData("kx_projects");
-
-function show(id) {
- document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
- const page = document.getElementById(id);
- if (page) page.classList.add("active");
- refresh();
- window.scrollTo(0, 0);
-}
-
-function openAgent(i) {
- const a = data[i];
- if (!a) return;
-
- document.getElementById("aemoji").textContent = a[0];
- document.getElementById("aname").textContent = a[1];
- document.getElementById("adesc").textContent = a[2];
- document.getElementById("atasks").textContent = a[3];
- document.getElementById("tasknote").value = "";
- document.getElementById("notesaved").textContent = "";
+function openAgent(i){
+ let a=data[i];
+ document.getElementById("aemoji").textContent=a[0];
+ document.getElementById("aname").textContent=a[1];
+ document.getElementById("adesc").textContent=a[2];
+ document.getElementById("atasks").textContent=a[3];
+ document.getElementById("tasknote").value="";
+ document.getElementById("notesaved").textContent="";
  show("agent");
 }
-
-document.getElementById("agents").innerHTML = data.map((a, i) => `
- <button class="card agent" onclick="openAgent(${i})">
-  <span class="emoji">${a[0]}</span>
-  <div>
-   <h3>${a[1]}</h3>
-   <p>${a[2]}</p>
-   <small>Open Agent →</small>
-  </div>
- </button>
-`).join("");
-
-async function saveNote() {
- const agentName = document.getElementById("aname").textContent.trim();
- const note = document.getElementById("tasknote").value.trim();
- const status = document.getElementById("notesaved");
- const button = document.getElementById("saveTaskBtn");
-
- if (!agentName || !note) {
-  status.textContent = "Please enter a task or instruction.";
-  return;
- }
-
- button.disabled = true;
- button.textContent = "Saving...";
- status.textContent = "Connecting to database...";
-
- try {
-  const response = await fetch("/api/commander", {
-   method: "POST",
-   headers: {
-    "Content-Type": "application/json"
-   },
-   body: JSON.stringify({
-    task: agentName + ": " + note
-   })
+document.getElementById("agents").innerHTML=data.map((a,i)=>
+ `<button class="card agent" onclick="openAgent(${i})"><span class="emoji">${a[0]}</span><div><h3>${a[1]}</h3><p>${a[2]}</p><small>Open Agent →</small></div></button>`
+).join("");
+async function saveNote(){
+ const agentName=document.getElementById("aname").textContent.trim();
+ const note=document.getElementById("tasknote").value.trim();
+ const status=document.getElementById("notesaved");
+ const button=document.getElementById("saveTaskBtn");
+ if(!agentName||!note){status.textContent="Please enter a task or instruction.";return;}
+ button.disabled=true;button.textContent="Saving...";
+ status.textContent="Sending task to KRYNTOX database...";
+ try{
+  const response=await fetch("/api/commander",{
+   method:"POST",headers:{"Content-Type":"application/json"},
+   body:JSON.stringify({task:agentName+": "+note})
   });
-
-  const result = await response.json();
-
-  if (!response.ok || !result.success) {
-   throw new Error(result.message || "Database save failed.");
-  }
-
-  status.textContent =
-   "Task saved successfully! ID: " + result.taskId;
-
-  document.getElementById("tasknote").value = "";
-
- } catch (error) {
-  status.textContent = "Error: " + error.message;
- } finally {
-  button.disabled = false;
-  button.textContent = "Save Task to Database";
- }
+  const result=await response.json();
+  if(!response.ok||!result.success)throw new Error(result.message||"Database rejected the task.");
+  status.textContent="Saved to database successfully. Task ID: "+result.taskId;
+  document.getElementById("tasknote").value="";
+ }catch(error){status.textContent="Database save failed: "+error.message;}
+ finally{button.disabled=false;button.textContent="Save Task to Database";}
 }
-
-function addLead() {
- const name = document.getElementById("cname").value.trim();
- const phone = document.getElementById("cphone").value.trim();
- const stage = document.getElementById("cstage").value;
-
- if (!name) {
-  alert("Enter business name");
-  return;
- }
-
- leads.push({ name, phone, stage });
- localStorage.setItem("kx_leads", JSON.stringify(leads));
-
- document.getElementById("cname").value = "";
- document.getElementById("cphone").value = "";
-
- refresh();
+function addLead(){
+ let name=document.getElementById("cname").value.trim();
+ if(!name){alert("Enter business name");return;}
+ leads.push({name,phone:document.getElementById("cphone").value,stage:document.getElementById("cstage").value});
+ localStorage.setItem("kx_leads",JSON.stringify(leads));
+ document.getElementById("cname").value="";document.getElementById("cphone").value="";refresh();
 }
-
-function addProject() {
- const name = document.getElementById("pname").value.trim();
- const status = document.getElementById("pstatus").value;
-
- if (!name) {
-  alert("Enter project name");
-  return;
- }
-
- projects.push({ name, status });
- localStorage.setItem("kx_projects", JSON.stringify(projects));
-
- document.getElementById("pname").value = "";
- refresh();
+function addProject(){
+ let name=document.getElementById("pname").value.trim();
+ if(!name){alert("Enter project name");return;}
+ projects.push({name,status:document.getElementById("pstatus").value});
+ localStorage.setItem("kx_projects",JSON.stringify(projects));
+ document.getElementById("pname").value="";refresh();
 }
-
-function escapeHTML(value) {
- return String(value || "").replace(/[&<>"']/g, c => ({
-  "&": "&amp;",
-  "<": "&lt;",
-  ">": "&gt;",
-  '"': "&quot;",
-  "'": "&#39;"
- })[c]);
+function refresh(){
+ document.getElementById("leadlist").innerHTML=leads.map(l=>
+ `<div class="card"><h3>${escapeHTML(l.name)}</h3><p>${escapeHTML(l.phone)}</p><small>${escapeHTML(l.stage)}</small></div>`
+ ).join("")||'<p class="muted">No leads added yet.</p>';
+ document.getElementById("projectlist").innerHTML=projects.map(p=>
+ `<div class="card"><h3>${escapeHTML(p.name)}</h3><small>${escapeHTML(p.status)}</small></div>`
+ ).join("")||'<p class="muted">No projects added yet.</p>';
+ document.getElementById("rleads").textContent=leads.length;
+ document.getElementById("rdeals").textContent=leads.filter(l=>l.stage==="Won").length;
+ document.getElementById("rrevenue").textContent="₹0";
+ document.getElementById("deals").textContent=leads.filter(l=>l.stage==="Won").length;
 }
-
-function refresh() {
- document.getElementById("leadlist").innerHTML =
-  leads.map(l => `
-   <div class="card">
-    <h3>${escapeHTML(l.name)}</h3>
-    <p>${escapeHTML(l.phone)}</p>
-    <small>${escapeHTML(l.stage)}</small>
-   </div>
-  `).join("") || '<p class="muted">No leads added yet.</p>';
-
- document.getElementById("projectlist").innerHTML =
-  projects.map(p => `
-   <div class="card">
-    <h3>${escapeHTML(p.name)}</h3>
-    <small>${escapeHTML(p.status)}</small>
-   </div>
-  `).join("") || '<p class="muted">No projects added yet.</p>';
-
- const won = leads.filter(l => l.stage === "Won").length;
-
- document.getElementById("deals").textContent = won;
- document.getElementById("rdeals").textContent = won;
- document.getElementById("rleads").textContent = leads.length;
- document.getElementById("rrevenue").textContent = "₹0";
- document.getElementById("revenue").textContent = "₹0";
+function escapeHTML(s){
+ return String(s||"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
-
 refresh();
 </script>
+</body>
+</html>
