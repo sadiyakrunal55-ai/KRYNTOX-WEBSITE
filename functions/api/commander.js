@@ -25,6 +25,23 @@ function json(data, status = 200) {
   });
 }
 
+function extractAIText(answer) {
+  if (typeof answer === "string") {
+    return answer.trim();
+  }
+
+  const content =
+    answer?.choices?.[0]?.message?.content ||
+    answer?.response ||
+    answer?.result?.response;
+
+  if (typeof content === "string" && content.trim()) {
+    return content.trim();
+  }
+
+  return "";
+}
+
 export async function onRequestGet({ env }) {
   try {
     if (!env.DB) {
@@ -53,7 +70,7 @@ export async function onRequestGet({ env }) {
   } catch (error) {
     return json({
       success: false,
-      message: error.message
+      message: error.message || "API error"
     }, 500);
   }
 }
@@ -76,7 +93,17 @@ export async function onRequestPost({ request, env }) {
       }, 503);
     }
 
-    const data = await request.json();
+    let data;
+
+    try {
+      data = await request.json();
+    } catch (error) {
+      return json({
+        success: false,
+        message: "Invalid JSON request"
+      }, 400);
+    }
+
     const task = String(data.task || "").trim();
 
     if (!task || task.length > 2000) {
@@ -110,32 +137,56 @@ export async function onRequestPost({ request, env }) {
           {
             role: "system",
             content: `
-You are COMMANDER AI, the strategy and coordination
-assistant for KRYNTOX HQ.
+You are COMMANDER AI, the strategy and coordination leader of KRYNTOX HQ.
 
-Analyze the user's task and create a practical action plan.
+Your team has 8 specialist agents:
 
-The KRYNTOX team has 8 specialist roles:
-1. COMMANDER AI - strategy and coordination
-2. SECURITYZ+ - cybersecurity
-3. DEVELOPER PRO - software engineering
-4. DESIGNER X - creative design
-5. RESEARCH NEXUS - research
-6. MARKETING TITAN - marketing
-7. CLIENT HUNTER X - sales intelligence
-8. SUPPORT GENIUS - customer support
+1. COMMANDER AI - Strategy and coordination
+2. SECURITYZ+ - Cybersecurity
+3. DEVELOPER PRO - Software engineering
+4. DESIGNER X - Creative design
+5. RESEARCH NEXUS - Market research
+6. MARKETING TITAN - Marketing
+7. CLIENT HUNTER X - Sales intelligence
+8. SUPPORT GENIUS - Customer support
 
-Return:
-1. Task understanding
-2. Recommended agent assignments
-3. Step-by-step action plan
-4. Expected result
-5. Risks or missing information
+YOUR RESPONSIBILITIES:
 
-Be honest. Do not claim that an agent performed an
-action unless it actually happened.
-Do not contact customers or perform external actions.
-Respond clearly and practically.
+- Understand the task carefully.
+- Select only the relevant specialist agents.
+- Give each selected agent a clear responsibility.
+- Create a practical step-by-step execution plan.
+- Identify risks and missing information.
+- Define the expected result.
+
+RESPONSE FORMAT:
+
+TASK UNDERSTANDING
+Explain the task in 2-3 sentences.
+
+AGENT ASSIGNMENTS
+List the relevant agents and their responsibilities.
+
+ACTION PLAN
+Give numbered practical steps.
+
+EXPECTED RESULT
+Explain the intended outcome.
+
+RISKS AND MISSING INFORMATION
+List important risks and unknowns.
+
+IMPORTANT RULES:
+
+- Give one complete answer only.
+- Do not repeat sections or paragraphs.
+- Be concise, professional and practical.
+- Never invent completed actions or results.
+- Do not claim another agent has executed a task.
+- You can plan and assign work, but cannot independently execute external actions.
+- Do not contact customers or make commitments.
+- If information is missing, clearly state what is needed.
+- Return readable text, not JSON.
 `
           },
           {
@@ -143,15 +194,18 @@ Respond clearly and practically.
             content: task
           }
         ],
-        max_tokens: 900,
-        temperature: 0.4
+        max_tokens: 1200,
+        temperature: 0.3
       }
     );
 
-    const resultText =
-      answer.response ||
-      answer.result?.response ||
-      JSON.stringify(answer);
+    const resultText = extractAIText(answer);
+
+    if (!resultText) {
+      throw new Error(
+        "AI returned no readable text. Please retry."
+      );
+    }
 
     await env.DB.prepare(`
       UPDATE commander_tasks
@@ -184,7 +238,9 @@ Respond clearly and practically.
           String(error.message || "AI execution failed"),
           id
         ).run();
-      } catch (dbError) {}
+      } catch (dbError) {
+        // Preserve the original error
+      }
     }
 
     return json({
