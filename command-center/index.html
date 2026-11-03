@@ -36,8 +36,15 @@ textarea{min-height:120px;resize:vertical}
 .wide{grid-column:1/-1}
 .row{display:flex;justify-content:space-between;gap:10px;align-items:center}
 hr{border:0;border-top:1px solid #293750;margin:16px 0}
-#aiResponse{white-space:pre-wrap;line-height:1.7;color:#dceaff;overflow-wrap:anywhere}
 #aiResponsePanel{display:none;margin-top:15px}
+#aiResponse{color:#dceaff;font-size:14px;line-height:1.8;overflow-wrap:anywhere}
+.ai-heading{font-size:15px;font-weight:bold;color:#75baff;margin:20px 0 8px}
+.ai-paragraph{margin:7px 0;color:#dceaff}
+.ai-list{padding-left:20px;margin:7px 0}
+.ai-list li{margin:7px 0;color:#dceaff}
+.ai-number{padding-left:22px;margin:7px 0}
+.ai-number li{margin:8px 0}
+.ai-label{color:#ffc66d;font-weight:bold}
 footer{text-align:center;color:#8293a9;padding:30px;font-size:12px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(4,1fr)}}
 </style>
@@ -78,24 +85,18 @@ footer{text-align:center;color:#8293a9;padding:30px;font-size:12px}
 
 <section id="agent" class="page">
  <button class="back" onclick="show('home')">← Back to Home</button>
-
  <div class="card">
   <div class="emoji" id="aemoji"></div>
   <h2 id="aname"></h2>
   <p id="adesc" class="muted"></p>
-
   <hr>
   <h3>Responsibilities</h3>
   <p id="atasks"></p>
-
   <div class="tag">STATUS: AI TASK EXECUTION ENABLED</div>
-
   <hr>
   <h3>Task Instructions</h3>
   <textarea id="tasknote" placeholder="Write a task or instruction..."></textarea>
-
   <button class="btn" id="saveTaskBtn" onclick="saveNote()">Run AI Task</button>
-
   <p id="notesaved" class="muted" role="status" aria-live="polite"></p>
 
   <div id="aiResponsePanel" class="card wide">
@@ -109,12 +110,10 @@ footer{text-align:center;color:#8293a9;padding:30px;font-size:12px}
 <section id="clients" class="page">
  <button class="back" onclick="show('home')">← Back to Home</button>
  <h2>CLIENT HUNTER X — CRM</h2>
-
  <div class="card">
   <div class="tag">DEMO CRM · NO AUTOMATIC OUTREACH</div>
   <input id="cname" placeholder="Business name">
   <input id="cphone" placeholder="Contact details">
-
   <select id="cstage">
    <option>New Lead</option>
    <option>Contacted</option>
@@ -123,10 +122,8 @@ footer{text-align:center;color:#8293a9;padding:30px;font-size:12px}
    <option>Won</option>
    <option>Lost</option>
   </select>
-
   <button class="btn" onclick="addLead()">Add Lead</button>
  </div>
-
  <h2>Lead Pipeline</h2>
  <div id="leadlist" class="grid"></div>
 </section>
@@ -134,7 +131,6 @@ footer{text-align:center;color:#8293a9;padding:30px;font-size:12px}
 <section id="security" class="page">
  <button class="back" onclick="show('home')">← Back to Home</button>
  <h2>SECURITYZ+ CENTER</h2>
-
  <div class="card">
   <div class="emoji">🛡️</div>
   <h3>Security Architecture</h3>
@@ -151,34 +147,28 @@ footer{text-align:center;color:#8293a9;padding:30px;font-size:12px}
 <section id="reports" class="page">
  <button class="back" onclick="show('home')">← Back to Home</button>
  <h2>Monthly Performance</h2>
-
  <div class="grid">
   <div class="card"><small>LEADS</small><div class="number" id="rleads">0</div></div>
   <div class="card"><small>DEALS</small><div class="number" id="rdeals">0</div></div>
   <div class="card"><small>REVENUE</small><div class="number" id="rrevenue">₹0</div></div>
   <div class="card"><small>LEAD TARGET</small><div class="number">220</div></div>
  </div>
-
  <p class="muted">Figures shown here are locally saved demo records, not actual business results.</p>
 </section>
 
 <section id="projects" class="page">
  <button class="back" onclick="show('home')">← Back to Home</button>
  <h2>Project Center</h2>
-
  <div class="card">
   <input id="pname" placeholder="Project name">
-
   <select id="pstatus">
    <option>Planning</option>
    <option>In Progress</option>
    <option>Testing</option>
    <option>Delivered</option>
   </select>
-
   <button class="btn" onclick="addProject()">Add Project</button>
  </div>
-
  <div id="projectlist" class="grid"></div>
 </section>
 
@@ -210,7 +200,6 @@ function show(id){
 
 function openAgent(i){
  let a=data[i];
-
  document.getElementById("aemoji").textContent=a[0];
  document.getElementById("aname").textContent=a[1];
  document.getElementById("adesc").textContent=a[2];
@@ -218,21 +207,64 @@ function openAgent(i){
  document.getElementById("tasknote").value="";
  document.getElementById("notesaved").textContent="";
  document.getElementById("aiResponsePanel").style.display="none";
- document.getElementById("aiResponse").textContent="";
-
+ document.getElementById("aiResponse").innerHTML="";
  show("agent");
 }
 
 document.getElementById("agents").innerHTML=data.map((a,i)=>
  `<button class="card agent" onclick="openAgent(${i})">
   <span class="emoji">${a[0]}</span>
-  <div>
-   <h3>${a[1]}</h3>
-   <p>${a[2]}</p>
-   <small>Open Agent →</small>
-  </div>
+  <div><h3>${a[1]}</h3><p>${a[2]}</p><small>Open Agent →</small></div>
  </button>`
 ).join("");
+
+function escapeHTML(s){
+ return String(s||"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+ }[c]));
+}
+
+function renderAIResponse(raw){
+ let text=String(raw||"").replace(/\\n/g,"\n").trim();
+ let lines=text.split("\n");
+ let html="";
+ let listType=null;
+
+ function closeList(){
+  if(listType){html+=listType==="ol"?"</ol>":"</ul>";listType=null;}
+ }
+
+ for(let line of lines){
+  line=line.trim();
+  if(!line) {closeList();continue;}
+
+  line=line.replace(/^#{1,6}\s*/,"");
+  line=line.replace(/\*\*(.*?)\*\*/g,"$1");
+  line=line.replace(/__(.*?)__/g,"$1");
+
+  const numbered=line.match(/^(?:\d+[.)]\s+)(.*)$/);
+  const bullet=line.match(/^(?:[-*•]\s+)(.*)$/);
+
+  const isHeading=/^(TASK UNDERSTANDING|TEAM ARCHITECTURE|AGENT ARCHITECTURE|AGENT ASSIGNMENTS|AGENT BLUEPRINTS|ACTION PLAN|IMPLEMENTATION PLAN|TESTING PLAN|EXPECTED RESULT|RISKS AND MISSING INFORMATION|TOOLS AND CAPABILITIES|IMPLEMENTATION|NEXT STEPS)$/i.test(line);
+
+  if(isHeading){
+   closeList();
+   html+='<div class="ai-heading">'+escapeHTML(line)+'</div>';
+  }else if(numbered){
+   if(listType!=="ol"){closeList();html+='<ol class="ai-number">';listType="ol";}
+   html+='<li>'+escapeHTML(numbered[1])+'</li>';
+  }else if(bullet){
+   if(listType!=="ul"){closeList();html+='<ul class="ai-list">';listType="ul";}
+   html+='<li>'+escapeHTML(bullet[1])+'</li>';
+  }else{
+   closeList();
+   html+='<p class="ai-paragraph">'+escapeHTML(line)+'</p>';
+  }
+ }
+
+ closeList();
+ document.getElementById("aiResponse").innerHTML=html||"<p>No readable AI response.</p>";
+}
 
 async function saveNote(){
  const agentName=document.getElementById("aname").textContent.trim();
@@ -240,7 +272,6 @@ async function saveNote(){
  const status=document.getElementById("notesaved");
  const button=document.getElementById("saveTaskBtn");
  const panel=document.getElementById("aiResponsePanel");
- const output=document.getElementById("aiResponse");
 
  if(!agentName||!note){
   status.textContent="Please enter a task or instruction.";
@@ -251,7 +282,7 @@ async function saveNote(){
  button.textContent="AI Working...";
  status.textContent="Sending task to COMMANDER AI...";
  panel.style.display="none";
- output.textContent="";
+ document.getElementById("aiResponse").innerHTML="";
 
  try{
   const response=await fetch("/api/commander",{
@@ -267,7 +298,7 @@ async function saveNote(){
   }
 
   status.textContent="AI Task Completed Successfully. Task ID: "+result.taskId;
-  output.textContent=result.result||"Task completed, but no AI response was returned.";
+  renderAIResponse(result.result);
   panel.style.display="block";
   document.getElementById("tasknote").value="";
 
@@ -281,11 +312,7 @@ async function saveNote(){
 
 function addLead(){
  let name=document.getElementById("cname").value.trim();
-
- if(!name){
-  alert("Enter business name");
-  return;
- }
+ if(!name){alert("Enter business name");return;}
 
  leads.push({
   name,
@@ -294,20 +321,14 @@ function addLead(){
  });
 
  localStorage.setItem("kx_leads",JSON.stringify(leads));
-
  document.getElementById("cname").value="";
  document.getElementById("cphone").value="";
-
  refresh();
 }
 
 function addProject(){
  let name=document.getElementById("pname").value.trim();
-
- if(!name){
-  alert("Enter project name");
-  return;
- }
+ if(!name){alert("Enter project name");return;}
 
  projects.push({
   name,
@@ -315,7 +336,6 @@ function addProject(){
  });
 
  localStorage.setItem("kx_projects",JSON.stringify(projects));
-
  document.getElementById("pname").value="";
  refresh();
 }
@@ -344,16 +364,6 @@ function refresh(){
  document.getElementById("deals").textContent=won;
  document.getElementById("revenue").textContent="₹0";
  document.getElementById("projectCount").textContent=projects.length;
-}
-
-function escapeHTML(s){
- return String(s||"").replace(/[&<>"']/g,c=>({
-  "&":"&amp;",
-  "<":"&lt;",
-  ">":"&gt;",
-  '"':"&quot;",
-  "'":"&#39;"
- }[c]));
 }
 
 refresh();
