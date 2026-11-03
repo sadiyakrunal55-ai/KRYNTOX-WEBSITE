@@ -1,3 +1,4 @@
+
 async function setupDatabase(DB) {
   await DB.prepare(`
     CREATE TABLE IF NOT EXISTS commander_tasks (
@@ -103,7 +104,7 @@ export async function onRequestPost({ request, env }) {
     ).run();
 
     const answer = await env.AI.run(
-      "@cf/meta/llama-3.1-8b-instruct",
+      "@cf/zai-org/glm-4.7-flash",
       {
         messages: [
           {
