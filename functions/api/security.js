@@ -1,4 +1,3 @@
-
 const OWNER = "sadiyakrunal55-ai";
 const REPO = "KRYNTOX-WEBSITE";
 const BRANCH = "command-center-dev";
@@ -6,48 +5,57 @@ const BRANCH = "command-center-dev";
 function json(data, status = 200) {
   return Response.json(data, {
     status,
-    headers: {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-store"
-    }
+    headers: { "Cache-Control": "no-store" }
   });
 }
 
 export async function onRequestGet({ env }) {
+  const token = env.GITHUB_TOKEN;
+
+  if (!token) {
+    return json({
+      success: false,
+      agent: "SECURITYZ+",
+      status: "secret-missing",
+      checks: {
+        tokenAvailable: false,
+        github: "not-tested",
+        repository: "not-tested",
+        branch: "not-tested"
+      },
+      message: "GITHUB_TOKEN is not available to this deployment."
+    }, 503);
+  }
+
+  const headers = {
+    Accept: "application/vnd.github+json",
+    Authorization: `Bearer ${token}`,
+    "X-GitHub-Api-Version": "2022-11-28"
+  };
+
   try {
-    const token = env.GITHUB_TOKEN;
-
-    if (!token) {
-      return json({
-        success: false,
-        agent: "SECURITYZ+",
-        status: "not-connected",
-        message: "GITHUB_TOKEN secret is missing in this environment."
-      }, 503);
-    }
-
-    const headers = {
-      "Accept": "application/vnd.github+json",
-      "Authorization": `Bearer ${token}`,
-      "X-GitHub-Api-Version": "2022-11-28"
-    };
-
-    const repoResponse = await fetch(
+    const response = await fetch(
       `https://api.github.com/repos/${OWNER}/${REPO}`,
       { headers }
     );
 
-    if (!repoResponse.ok) {
+    if (!response.ok) {
       return json({
         success: false,
         agent: "SECURITYZ+",
-        status: "github-connection-failed",
-        githubStatus: repoResponse.status,
-        message: "GitHub repository access could not be verified."
+        status: "github-api-error",
+        githubStatus: response.status,
+        checks: {
+          tokenAvailable: true,
+          github: "failed",
+          repository: "not-verified",
+          branch: "not-tested"
+        },
+        message: "GitHub API rejected the request."
       }, 502);
     }
 
-    const repo = await repoResponse.json();
+    const repo = await response.json();
 
     const branchResponse = await fetch(
       `https://api.github.com/repos/${OWNER}/${REPO}/branches/${BRANCH}`,
@@ -60,7 +68,13 @@ export async function onRequestGet({ env }) {
         agent: "SECURITYZ+",
         status: "branch-check-failed",
         githubStatus: branchResponse.status,
-        message: "Repository connected, but preview branch could not be verified."
+        checks: {
+          tokenAvailable: true,
+          github: "connected",
+          repository: "verified",
+          branch: "failed"
+        },
+        message: "Repository connected, but preview branch check failed."
       }, 502);
     }
 
@@ -74,17 +88,22 @@ export async function onRequestGet({ env }) {
       branch: BRANCH,
       branchVerified: true,
       defaultBranch: repo.default_branch,
-      permissions: "Read-only",
       commit: branch.commit.sha,
-      message: "GitHub read-only connection verified successfully."
+      checks: {
+        tokenAvailable: true,
+        github: "connected",
+        repository: "verified",
+        branch: "verified"
+      },
+      message: "SECURITYZ+ GitHub connection verified."
     });
 
   } catch (error) {
     return json({
       success: false,
       agent: "SECURITYZ+",
-      status: "connection-error",
-      message: error.message || "Unexpected connection error."
+      status: "request-error",
+      message: "GitHub verification request failed."
     }, 500);
   }
 }
