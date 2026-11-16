@@ -1,216 +1,74 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="google-site-verification" content="zCyszCHw4sj32I0TQCWhDHxiiM389YVvK_ODhqdUHRQ" />
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="KRYNTOX Digital Studio offers professional photo retouching and video editing services for individuals and businesses.">
-  <meta name="theme-color" content="#0b1220">
-  <title>KRYNTOX Digital Studio | Photo & Video Editing</title>
-  <style>
-    :root{--bg:#0b1220;--panel:#111c2e;--panel2:#152238;--gold:#d9b56d;--gold2:#f1d69a;--text:#f5f7fb;--muted:#aab5c6;--line:rgba(255,255,255,.1);--green:#25d366}
-    *{box-sizing:border-box;margin:0;padding:0}
-    html{scroll-behavior:smooth}
-    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-    a{color:inherit;text-decoration:none}button,input,textarea,select{font:inherit}
-    .container{width:min(1120px,92%);margin:auto}
-    .topbar{border-bottom:1px solid var(--line);background:#080e19}
-    .topbar .container{display:flex;justify-content:space-between;gap:12px;padding:9px 0;color:var(--muted);font-size:.82rem}
-    header{position:sticky;top:0;z-index:20;background:rgba(11,18,32,.92);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-    .nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
-    .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.04em}
-    .brandmark{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--gold2),#b88c3e);color:#101827;font-weight:900;font-size:1.1rem}
-    .brand small{display:block;color:var(--gold);font-size:.63rem;letter-spacing:.2em;margin-top:1px}
-    .navlinks{display:flex;align-items:center;gap:25px;color:#d5dbea;font-size:.92rem}
-    .navlinks a:hover{color:var(--gold2)}
-    .btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;padding:12px 19px;border-radius:10px;font-weight:750;border:1px solid transparent;transition:.2s;cursor:pointer}
-    .btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111827}
-    .btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 28px #d9b56d2b}
-    .btn-outline{border-color:#65738a;color:var(--text);background:transparent}
-    .btn-outline:hover{border-color:var(--gold);color:var(--gold2)}
-    .menu-btn{display:none;background:none;color:white;border:1px solid var(--line);border-radius:9px;padding:8px 11px}
-    .hero{padding:88px 0 78px;position:relative;overflow:hidden}
-    .hero:before{content:"";position:absolute;width:500px;height:500px;border-radius:50%;background:#c69b4a12;filter:blur(30px);right:-180px;top:-170px}
-    .hero-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:55px;align-items:center;position:relative}
-    .eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--gold2);font-size:.82rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
-    .eyebrow:before{content:"";width:25px;height:1px;background:var(--gold)}
-    h1{font-size:clamp(2.65rem,5.7vw,5rem);line-height:1.05;letter-spacing:-.045em;margin:19px 0}
-    h1 span{color:var(--gold2)}.lead{font-size:1.08rem;color:var(--muted);max-width:590px}
-    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:29px}
-    .trustline{display:flex;gap:22px;flex-wrap:wrap;margin-top:30px;color:#c1cada;font-size:.86rem}
-    .trustline span:before{content:"✓";color:var(--gold);font-weight:900;margin-right:7px}
-    .hero-card{background:linear-gradient(145deg,#192943,#101a2b);border:1px solid #d9b56d45;border-radius:24px;padding:25px;box-shadow:0 25px 70px #0006;transform:rotate(1deg)}
-    .mock-window{border:1px solid #ffffff20;border-radius:15px;overflow:hidden;background:#0c1422}
-    .mock-head{padding:12px 15px;border-bottom:1px solid var(--line);display:flex;gap:6px}
-    .dot{width:8px;height:8px;border-radius:50%;background:#d9b56d}
-    .mock-body{padding:25px}.mock-label{color:var(--gold);font-size:.7rem;letter-spacing:.18em;font-weight:800}
-    .mock-title{font-size:1.8rem;line-height:1.15;margin:10px 0}
-    .mock-lines{height:7px;background:#34445d;border-radius:9px;margin:9px 0;width:85%}.mock-lines.short{width:58%}
-    .mock-tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:22px}
-    .mock-tile{height:85px;border-radius:10px;background:linear-gradient(135deg,#243957,#17263b);border:1px solid #ffffff12;padding:12px;color:var(--gold2);font-size:.8rem}
-    section{padding:78px 0}.section-head{text-align:center;max-width:700px;margin:0 auto 42px}
-    .section-head h2{font-size:clamp(2rem,4vw,3rem);line-height:1.15;margin:12px 0}.section-head p{color:var(--muted)}
-    .service-group-title{font-size:1.45rem;margin:0 0 18px;color:var(--gold2)}
-    .services{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:42px}
-    .service{overflow:hidden;background:linear-gradient(160deg,var(--panel),#0e1726);border:1px solid var(--line);border-radius:16px;transition:.25s}
-    .service:hover{transform:translateY(-5px);border-color:#d9b56d80}
-    .service-photo{height:190px;position:relative;overflow:hidden;background:linear-gradient(135deg,#263b59,#111c2e)}
-    .service-photo img{width:100%;height:100%;object-fit:cover;display:block}
-    .service-photo .tag{position:absolute;left:12px;top:12px;background:#080e19d9;border:1px solid #ffffff30;border-radius:20px;padding:4px 10px;font-size:.72rem;color:var(--gold2)}
-    .service-body{padding:20px}.service h3{font-size:1.08rem;margin-bottom:7px}
-    .service p{color:var(--muted);font-size:.9rem;min-height:48px}
-    .service-bottom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}
-    .service-price{font-size:1.45rem;font-weight:900;color:var(--gold2)}
-    .service-price small{font-size:.72rem;color:var(--muted);font-weight:500}
-    .service .btn{padding:9px 12px;font-size:.82rem}
-    .about-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px;align-items:center}
-    .about-panel{background:linear-gradient(145deg,#1b2a42,#101827);border:1px solid var(--line);padding:32px;border-radius:22px}
-    .about-panel .big{font-size:4rem;color:var(--gold2);font-weight:900;line-height:1}
-    .about-panel p{color:var(--muted);margin-top:12px}
-    .about-copy h2{font-size:clamp(2rem,4vw,2.8rem);line-height:1.15;margin:12px 0 18px}
-    .about-copy p{color:var(--muted);margin-bottom:15px}
-    .checks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}
-    .checks span{font-size:.9rem;color:#e3e8f1}.checks span:before{content:"✓";color:var(--gold);margin-right:8px}
-    .process{display:grid;grid-template-columns:repeat(4,1fr);gap:15px}
-    .step{padding:22px;border:1px solid var(--line);border-radius:15px;background:var(--panel)}
-    .step b{font-size:1.8rem;color:var(--gold);display:block;margin-bottom:9px}.step p{font-size:.9rem;color:var(--muted);margin-top:6px}
-    .portfolio-note{padding:30px;border:1px dashed #b99555;border-radius:17px;background:#d9b56d0b;text-align:center;color:var(--muted)}
-    .portfolio-note strong{display:block;color:var(--gold2);font-size:1.15rem;margin-bottom:6px}
-    .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
-    .price-card{padding:23px 19px;background:var(--panel);border:1px solid var(--line);border-radius:16px}
-    .price-card h3{font-size:1rem;min-height:48px}.price{font-size:1.9rem;font-weight:900;color:var(--gold2);margin:10px 0}
-    .price-card p{font-size:.84rem;color:var(--muted);min-height:56px}
-    .price-card .btn{width:100%;margin-top:15px;padding:10px;font-size:.86rem}
-    .note{font-size:.82rem;color:var(--muted);margin-top:15px;text-align:center}
-    .contact-wrap{display:grid;grid-template-columns:.85fr 1.15fr;gap:25px}
-    .contact-info,.contact-form{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:27px}
-    .contact-info h3,.contact-form h3{font-size:1.35rem;margin-bottom:10px}
-    .contact-info p{color:var(--muted);margin-bottom:22px}
-    .contact-item{padding:13px 0;border-top:1px solid var(--line);color:#dce3ef}.contact-item small{display:block;color:var(--muted)}
-    label{display:block;font-size:.87rem;color:#dce3ef;margin:0 0 6px}
-    input,textarea,select{width:100%;background:#0b1423;border:1px solid #34445b;color:white;border-radius:9px;padding:12px 13px;margin-bottom:14px;outline:none}
-    input:focus,textarea:focus,select:focus{border-color:var(--gold)}textarea{min-height:105px;resize:vertical}
-    .contact-form .btn{width:100%}footer{border-top:1px solid var(--line);padding:28px 0;color:var(--muted);font-size:.86rem}
-    .footer-inner{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}
-    .wa-float{position:fixed;right:19px;bottom:19px;z-index:30;width:58px;height:58px;border-radius:50%;background:var(--green);color:#062b14;display:grid;place-items:center;font-size:1.55rem;box-shadow:0 8px 28px #0008;font-weight:900}
-    .wa-float:hover{transform:scale(1.06)}
-    @media(max-width:900px){.hero-grid,.about-grid,.contact-wrap{grid-template-columns:1fr}.hero{padding-top:60px}.hero-card{max-width:570px}.services,.pricing{grid-template-columns:repeat(2,1fr)}.process{grid-template-columns:repeat(2,1fr)}}
-    @media(max-width:650px){.topbar .container{font-size:.72rem}.nav{height:68px}.menu-btn{display:block}.navlinks{display:none;position:absolute;top:68px;left:0;right:0;background:#0b1220;padding:18px 4%;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start;gap:17px}.navlinks.open{display:flex}.nav-cta{display:none}.hero{padding:54px 0}.hero-grid{gap:35px}h1{font-size:2.8rem}.hero-card{padding:15px}.services,.pricing{grid-template-columns:1fr}.service p,.price-card p{min-height:0}.process{grid-template-columns:1fr 1fr}section{padding:60px 0}.checks{grid-template-columns:1fr}.about-panel{padding:25px}.footer-inner{flex-direction:column}}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#090e18">
+<meta name="description" content="KRYNTOX Digital Studio - professional photo retouching and video editing services.">
+<title>KRYNTOX Digital Studio | Edit • Create • Grow</title>
+<style>
+:root{--bg:#090e18;--panel:#111b2b;--panel2:#17243a;--gold:#d8b56d;--gold2:#f3d99e;--text:#f6f7fb;--muted:#aab5c6;--line:rgba(255,255,255,.11);--green:#25d366;--radius:18px}
+*{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;scroll-padding-top:88px}body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}a{color:inherit;text-decoration:none}button,input,textarea,select{font:inherit}.container{width:min(1140px,92%);margin:auto}
+.topline{background:#070b12;border-bottom:1px solid var(--line);color:var(--muted);font-size:.78rem;padding:8px 0}.topline .container{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+header{position:sticky;top:0;z-index:50;background:rgba(9,14,24,.94);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}.nav{height:76px;display:flex;align-items:center;justify-content:space-between;gap:18px}.brand{display:flex;align-items:center;gap:11px;font-weight:900;letter-spacing:.06em}.brand-icon{width:43px;height:43px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(135deg,var(--gold2),#ad8138);color:#111827;font-size:1.25rem;box-shadow:0 7px 25px #d8b56d30}.brand small{display:block;color:var(--gold);font-size:.58rem;letter-spacing:.22em;margin-top:1px}.navlinks{display:flex;align-items:center;gap:23px;color:#d4dbea;font-size:.88rem}.navlinks a:hover{color:var(--gold2)}.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 18px;border-radius:10px;font-weight:800;font-size:.88rem;border:1px solid transparent;cursor:pointer;transition:.2s}.btn-gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#111827}.btn-gold:hover{transform:translateY(-2px);box-shadow:0 10px 28px #d8b56d35}.btn-line{background:transparent;border-color:#64738a;color:var(--text)}.btn-line:hover{border-color:var(--gold);color:var(--gold2)}.menu{display:none;background:none;color:white;border:1px solid var(--line);border-radius:9px;padding:8px 11px;font-size:1.2rem}
+.hero{padding:82px 0 76px;position:relative;overflow:hidden}.hero:before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;background:#d8b56d12;filter:blur(55px);right:-180px;top:-200px;pointer-events:none}.hero-grid{display:grid;grid-template-columns:1.08fr .92fr;gap:55px;align-items:center;position:relative}.eyebrow{display:inline-flex;align-items:center;gap:9px;color:var(--gold2);font-size:.75rem;font-weight:900;letter-spacing:.19em;text-transform:uppercase}.eyebrow:before{content:"";width:25px;height:1px;background:var(--gold)}h1{font-size:clamp(2.8rem,6vw,5.3rem);line-height:1.02;letter-spacing:-.055em;margin:19px 0}h1 span{color:var(--gold2)}.lead{font-size:1.04rem;color:var(--muted);max-width:580px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}.trust{display:flex;gap:18px;flex-wrap:wrap;margin-top:27px;color:#c4ccda;font-size:.8rem}.trust span:before{content:"✓";color:var(--gold);font-weight:900;margin-right:7px}.hero-art{background:linear-gradient(145deg,#1a2a43,#101827);border:1px solid #d8b56d55;border-radius:25px;padding:22px;box-shadow:0 25px 70px #0008;transform:rotate(1deg)}.art-window{border:1px solid #ffffff20;border-radius:16px;overflow:hidden;background:#0b1321}.art-top{padding:12px 15px;border-bottom:1px solid var(--line);display:flex;gap:6px}.art-top i{width:8px;height:8px;border-radius:50%;background:var(--gold)}.art-body{padding:25px}.art-label{font-size:.67rem;letter-spacing:.2em;color:var(--gold);font-weight:900}.art-title{font-size:1.8rem;line-height:1.18;margin:10px 0 18px}.art-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.art-tile{min-height:83px;border-radius:11px;padding:12px;background:linear-gradient(135deg,#263b59,#17243a);border:1px solid #ffffff12;color:var(--gold2);font-size:.8rem}.art-tile b{display:block;color:#fff;font-size:1rem;margin-bottom:3px}
+section{padding:76px 0}.section-head{text-align:center;max-width:720px;margin:0 auto 40px}.section-head h2{font-size:clamp(2rem,4vw,3rem);line-height:1.12;margin:12px 0}.section-head p{color:var(--muted)}.group-title{font-size:1.35rem;color:var(--gold2);margin:0 0 17px}.service-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:42px}.service-card{overflow:hidden;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(155deg,var(--panel),#0e1725);transition:.25s}.service-card:hover{transform:translateY(-5px);border-color:#d8b56d90;box-shadow:0 16px 35px #0004}.service-image{height:205px;position:relative;overflow:hidden;background:radial-gradient(circle at 25% 20%,#3b5372,#18263b 55%,#0d1523)}.service-image img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}.service-card:hover .service-image img{transform:scale(1.04)}.service-image:after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(transparent,#08101c65);pointer-events:none}.image-fallback{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:20px;color:#e7d3a7;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:.8rem}.tag{position:absolute;z-index:2;top:12px;left:12px;padding:4px 10px;border-radius:30px;background:#080e19dc;border:1px solid #ffffff30;color:var(--gold2);font-size:.68rem}.service-content{padding:19px}.service-content h4{font-size:1.05rem;margin-bottom:7px}.service-content p{color:var(--muted);font-size:.86rem;min-height:48px}.service-foot{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:16px}.amount{font-size:1.4rem;font-weight:950;color:var(--gold2)}.amount small{font-size:.68rem;color:var(--muted);font-weight:600}.service-foot .btn{padding:9px 12px;font-size:.78rem}
+.about-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:42px;align-items:center}.about-box{padding:32px;border-radius:22px;background:linear-gradient(145deg,#1b2b44,#101827);border:1px solid var(--line)}.about-logo{font-size:3.7rem;line-height:1;font-weight:950;color:var(--gold2)}.about-box p,.about-copy p{color:var(--muted);margin-top:12px}.about-copy h2{font-size:clamp(2rem,4vw,2.8rem);line-height:1.12;margin:12px 0 16px}.checks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px}.checks span{font-size:.88rem}.checks span:before{content:"✓";color:var(--gold);margin-right:8px}.process-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.step{padding:22px;border-radius:15px;background:var(--panel);border:1px solid var(--line)}.step b{display:block;font-size:1.8rem;color:var(--gold);margin-bottom:8px}.step p{font-size:.86rem;color:var(--muted);margin-top:6px}
+.pricing-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.price-card{padding:22px 19px;background:var(--panel);border:1px solid var(--line);border-radius:16px}.price-card h4{font-size:1rem;min-height:48px}.price{font-size:1.9rem;font-weight:950;color:var(--gold2);margin:8px 0}.price-card p{font-size:.83rem;color:var(--muted);min-height:50px}.price-card .btn{width:100%;margin-top:14px}.fineprint{text-align:center;color:var(--muted);font-size:.8rem;margin-top:17px}
+.contact-grid{display:grid;grid-template-columns:.85fr 1.15fr;gap:22px}.contact-card,.form-card{padding:26px;border-radius:18px;background:var(--panel);border:1px solid var(--line)}.contact-card h3,.form-card h3{font-size:1.3rem;margin-bottom:8px}.contact-card p{color:var(--muted);margin-bottom:18px}.contact-line{padding:13px 0;border-top:1px solid var(--line);color:#e1e7f1}.contact-line small{display:block;color:var(--muted)}label{display:block;font-size:.85rem;margin:0 0 6px;color:#dce3ef}input,textarea,select{width:100%;padding:12px 13px;margin-bottom:14px;border-radius:9px;background:#0a1321;border:1px solid #35445b;color:white;outline:none}input:focus,textarea:focus,select:focus{border-color:var(--gold)}textarea{min-height:105px;resize:vertical}.form-card .btn{width:100%}footer{padding:27px 0;border-top:1px solid var(--line);color:var(--muted);font-size:.82rem}.footer-row{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.wa-float{position:fixed;right:18px;bottom:18px;z-index:60;width:57px;height:57px;border-radius:50%;display:grid;place-items:center;background:var(--green);color:#062b14;font-size:1.5rem;font-weight:900;box-shadow:0 8px 28px #0008}
+@media(max-width:900px){.hero-grid,.about-grid,.contact-grid{grid-template-columns:1fr}.hero-art{max-width:580px}.service-grid,.pricing-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.process-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:650px){.nav{height:68px}.menu{display:block}.navlinks{display:none;position:absolute;top:68px;left:0;right:0;background:#0b1220;padding:18px 4%;border-bottom:1px solid var(--line);flex-direction:column;align-items:flex-start;gap:16px}.navlinks.open{display:flex}.nav-cta{display:none}.hero{padding:52px 0}.hero-grid{gap:35px}h1{font-size:2.8rem}.hero-art{padding:14px}.service-grid,.pricing-grid{grid-template-columns:1fr}.service-content p,.price-card p{min-height:0}section{padding:58px 0}.checks{grid-template-columns:1fr}.process-grid{grid-template-columns:1fr 1fr}.footer-row{flex-direction:column}.topline .container{font-size:.7rem}}
+</style>
 </head>
 <body>
-  <div class="topbar"><div class="container"><span>Creative editing solutions for people and growing businesses</span><span>Jamnagar, Gujarat · India</span></div></div>
-  <header>
-    <div class="container nav">
-      <a class="brand" href="#home"><span class="brandmark">K</span><span>KRYNTOX<small>EDIT • CREATE • GROW</small></span></a>
-      <button class="menu-btn" id="menuBtn" aria-label="Open navigation">☰</button>
-      <nav class="navlinks" id="navLinks"><a href="#home">Home</a><a href="#services">Services</a><a href="#about">About</a><a href="#process">Process</a><a href="#pricing">Pricing</a><a href="#contact">Contact</a></nav>
-      <a class="btn btn-gold nav-cta" href="https://wa.me/917096620842?text=Hello%20KRYNTOX!%20I%20am%20interested%20in%20your%20editing%20services.%20Please%20share%20the%20details." target="_blank" rel="noopener">Get a Quote ↗</a>
-    </div>
-  </header>
-  <main>
-    <section class="hero" id="home">
-      <div class="container hero-grid">
-        <div>
-          <div class="eyebrow">Your Creative Editing Partner</div>
-          <h1>Make Every Frame <span>Stand Out.</span></h1>
-          <p class="lead">Professional photo retouching and video editing for creators, celebrations and growing businesses. Share your idea and get a clear quote before work begins.</p>
-          <div class="hero-actions"><a class="btn btn-gold" href="#contact">Start Your Project →</a><a class="btn btn-outline" href="#services">Explore Services</a></div>
-          <div class="trustline"><span>Clear project scope</span><span>WhatsApp communication</span><span>Preview before delivery</span></div>
-        </div>
-        <div class="hero-card">
-          <div class="mock-window"><div class="mock-head"><i class="dot"></i><i class="dot"></i><i class="dot"></i></div><div class="mock-body"><div class="mock-label">KRYNTOX CREATIVE STUDIO</div><div class="mock-title">Your moments.<br><span style="color:#e8c982">Made memorable.</span></div><div class="mock-lines"></div><div class="mock-lines short"></div><div class="mock-tiles"><div class="mock-tile">01<br>Photo Retouching</div><div class="mock-tile">02<br>Reels Editing</div><div class="mock-tile">03<br>Cinematic Video</div><div class="mock-tile">04<br>Wedding Highlights</div></div></div></div>
-        </div>
-      </div>
-    </section>
-
-    <section id="services">
-      <div class="container">
-        <div class="section-head"><div class="eyebrow">What We Do</div><h2>Photo & Video Editing Services</h2><p>Choose a service to view its starting price and send an enquiry directly on WhatsApp.</p></div>
-        <h3 class="service-group-title">Photo Editing</h3>
-        <div class="services">
-          <article class="service"><div class="service-photo"><img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=85" alt="Portrait example for face retouching" loading="lazy"><span class="tag">Photo Editing</span></div><div class="service-body"><h3>Face Retouching</h3><p>Natural portrait touch-ups, skin cleanup and small blemish correction.</p><div class="service-bottom"><div class="service-price">₹99 <small>/ photo</small></div><a class="btn btn-outline" href="#contact" data-service="Face Retouching">Order Now</a></div></div></article>
-          <article class="service"><div class="service-photo"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=85" alt="Portrait example for background removal" loading="lazy"><span class="tag">Photo Editing</span></div><div class="service-body"><h3>Background Remove</h3><p>Clean subject cut-out with a transparent or requested plain background.</p><div class="service-bottom"><div class="service-price">₹49 <small>/ photo</small></div><a class="btn btn-outline" href="#contact" data-service="Background Remove">Order Now</a></div></div></article>
-          <article class="service"><div class="service-photo"><img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=900&q=85" alt="Portrait example for photo blur fix" loading="lazy"><span class="tag">Photo Editing</span></div><div class="service-body"><h3>Photo Blur Fix</h3><p>Improve clarity and sharpness where the original photo contains recoverable detail.</p><div class="service-bottom"><div class="service-price">₹99 <small>/ photo</small></div><a class="btn btn-outline" href="#contact" data-service="Photo Blur Fix">Order Now</a></div></div></article>
-          <article class="service"><div class="service-photo"><img src="https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=85" alt="Vintage camera and photo restoration theme" loading="lazy"><span class="tag">Photo Editing</span></div><div class="service-body"><h3>Photo Restoration</h3><p>Repair scratches, fading and minor damage in old photographs.</p><div class="service-bottom"><div class="service-price">₹199 <small>/ photo · starting</small></div><a class="btn btn-outline" href="#contact" data-service="Photo Restoration">Order Now</a></div></div></article>
-        </div>
-
-        <h3 class="service-group-title">Video Editing</h3>
-        <div class="services">
-          <article class="service"><div class="service-photo"><img src="https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=900&q=85" alt="Video editing workstation for reels editing" loading="lazy"><span class="tag">Video Editing</span></div><div class="service-body"><h3>Instagram Reels Editing</h3><p>Short vertical videos with cuts, captions, music and basic effects. 30–60 seconds.</p><div class="service-bottom"><div class="service-price">₹299 <small>/ reel</small></div><a class="btn btn-outline" href="#contact" data-service="Instagram Reels Editing">Order Now</a></div></div></article>
-          <article class="service"><div class="service-photo"><img src="https://images.unsplash.com/photo-1492619375914-88005aa9e8fb?auto=format&fit=crop&w=900&q=85" alt="Camera filming a cinematic video" loading="lazy"><span class="tag">Video Editing</span></div><div class="service-body"><h3>Cinematic Video Editing</h3><p>Short cinematic edits with pacing, transitions and basic colour grading.</p><div class="service-bottom"><div class="service-price">₹499 <small>/ starting</small></div><a class="btn btn-outline" href="#contact" data-service="Cinematic Video Editing">Order Now</a></div></div></article>
-          <article class="service"><div class="service-photo"><img src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=85" alt="Wedding celebration example for highlight editing" loading="lazy"><span class="tag">Video Editing</span></div><div class="service-body"><h3>Wedding Video Editing</h3><p>Short wedding highlight edit using your supplied footage. Full-length edits quoted separately.</p><div class="service-bottom"><div class="service-price">₹1,499 <small>/ starting</small></div><a class="btn btn-outline" href="#contact" data-service="Wedding Video Editing">Order Now</a></div></div></article>
-        </div>
-      </div>
-    </section>
-
-    <section id="about">
-      <div class="container about-grid">
-        <div class="about-panel"><div class="big">KRYNTOX.</div><h3 style="font-size:1.35rem;margin-top:10px">Every Detail. Every Frame.</h3><p>Thoughtful editing, simple communication and clear deliverables for every project.</p></div>
-        <div class="about-copy"><div class="eyebrow">About The Studio</div><h2>Creative Editing That Brings Your Content Forward.</h2><p>KRYNTOX Digital Studio focuses on photo retouching and video editing for individuals, creators and growing businesses.</p><p>We agree on the project scope, timeline, revisions and final price before starting, so you know what to expect.</p><div class="checks"><span>Photo retouching</span><span>Short-form video edits</span><span>Clear scope before work</span><span>WhatsApp communication</span></div></div>
-      </div>
-    </section>
-
-    <section id="process">
-      <div class="container"><div class="section-head"><div class="eyebrow">How It Works</div><h2>A Simple, Clear Process</h2><p>Know what happens next before your project begins.</p></div>
-        <div class="process"><div class="step"><b>01</b><h3>Choose a Service</h3><p>Select the photo or video editing service you need.</p></div><div class="step"><b>02</b><h3>Share Your Files</h3><p>Send your photos, footage and instructions on WhatsApp.</p></div><div class="step"><b>03</b><h3>Review the Quote</h3><p>Confirm scope, timeline, revisions and price before work starts.</p></div><div class="step"><b>04</b><h3>Final Delivery</h3><p>Receive the completed files after approval and agreed payment.</p></div></div>
-      </div>
-    </section>
-
-    <section id="portfolio">
-      <div class="container"><div class="section-head"><div class="eyebrow">Selected Work</div><h2>Portfolio Coming Soon</h2><p>We are preparing original sample projects to show the quality and style of our work.</p></div><div class="portfolio-note"><strong>Want to see a sample for your project?</strong>Send your requirements and ask about a suitable sample before placing an order.</div></div>
-    </section>
-
-    <section id="pricing">
-      <div class="container"><div class="section-head"><div class="eyebrow">Starting Packages</div><h2>Simple Starting Prices</h2><p>Choose a service below. Final quotes depend on the files, complexity and delivery requirements.</p></div>
-        <h3 class="service-group-title">Photo Editing</h3>
-        <div class="pricing">
-          <article class="price-card"><h3>Face Retouching</h3><div class="price">₹99</div><p>Per photo. Natural face and skin touch-up.</p><a class="btn btn-outline" href="#contact" data-service="Face Retouching">Enquire Now</a></article>
-          <article class="price-card"><h3>Background Remove</h3><div class="price">₹49</div><p>Per photo. Clean background cut-out.</p><a class="btn btn-outline" href="#contact" data-service="Background Remove">Enquire Now</a></article>
-          <article class="price-card"><h3>Photo Blur Fix</h3><div class="price">₹99</div><p>Per photo. Results depend on original image quality.</p><a class="btn btn-outline" href="#contact" data-service="Photo Blur Fix">Enquire Now</a></article>
-          <article class="price-card"><h3>Photo Restoration</h3><div class="price">₹199</div><p>Starting price per photo. Heavily damaged photos cost more.</p><a class="btn btn-outline" href="#contact" data-service="Photo Restoration">Enquire Now</a></article>
-        </div>
-        <h3 class="service-group-title" style="margin-top:34px">Video Editing</h3>
-        <div class="pricing">
-          <article class="price-card"><h3>Instagram Reels Editing</h3><div class="price">₹299</div><p>Per reel, 30–60 seconds. Basic cuts, captions and music.</p><a class="btn btn-outline" href="#contact" data-service="Instagram Reels Editing">Enquire Now</a></article>
-          <article class="price-card"><h3>Cinematic Video Editing</h3><div class="price">₹499+</div><p>Starting price for a short cinematic edit.</p><a class="btn btn-outline" href="#contact" data-service="Cinematic Video Editing">Enquire Now</a></article>
-          <article class="price-card"><h3>Wedding Video Editing</h3><div class="price">₹1,499+</div><p>Starting price for a short highlight. Full-length edits quoted separately.</p><a class="btn btn-outline" href="#contact" data-service="Wedding Video Editing">Enquire Now</a></article>
-        </div>
-        <p class="note">Indicative starting prices. Confirm footage length, editing complexity, revisions, delivery time and payment terms in writing before work begins.</p>
-      </div>
-    </section>
-
-    <section id="contact">
-      <div class="container"><div class="section-head"><div class="eyebrow">Let's Talk</div><h2>Tell Us About Your Project</h2><p>Send your requirements on WhatsApp. We will discuss the next steps.</p></div>
-        <div class="contact-wrap">
-          <div class="contact-info"><h3>Start a Conversation</h3><p>Need a photo retouch or video edit? Contact the studio directly.</p><div class="contact-item">WhatsApp<small>+91 70966 20842</small></div><div class="contact-item">Service Area<small>Jamnagar, Gujarat · Online projects across India</small></div><div class="contact-item">Working Style<small>Project scope and quote confirmed before starting</small></div><a class="btn btn-gold" style="width:100%;margin-top:18px" href="https://wa.me/917096620842?text=Hello%20KRYNTOX!%20I%20am%20interested%20in%20your%20editing%20services.%20Please%20share%20the%20details." target="_blank" rel="noopener">Chat on WhatsApp ↗</a></div>
-          <form class="contact-form" id="contactForm"><h3>Quick Project Enquiry</h3><label for="name">Your Name</label><input id="name" name="name" placeholder="Enter your name" required><label for="business">Business / Project Name</label><input id="business" name="business" placeholder="Your business or project name"><label for="service">Service Required</label><select id="service" name="service" required><option value="">Choose a service</option><optgroup label="Photo Editing"><option>Face Retouching</option><option>Background Remove</option><option>Photo Blur Fix</option><option>Photo Restoration</option></optgroup><optgroup label="Video Editing"><option>Instagram Reels Editing</option><option>Cinematic Video Editing</option><option>Wedding Video Editing</option></optgroup><option>Other</option></select><label for="message">Project Details</label><textarea id="message" name="message" placeholder="Tell us briefly what you need..."></textarea><button class="btn btn-gold" type="submit">Send Enquiry on WhatsApp ↗</button></form>
-        </div>
-      </div>
-    </section>
-  </main>
-  <footer><div class="container footer-inner"><span>© <span id="year"></span> KRYNTOX Digital Studio. All rights reserved.</span><span>Designed to make every frame stand out.</span></div></footer>
-  <a class="wa-float" href="https://wa.me/917096620842?text=Hello%20KRYNTOX" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">☏</a>
-  <script>
-    const menuBtn=document.getElementById('menuBtn');
-    const navLinks=document.getElementById('navLinks');
-    menuBtn.addEventListener('click',()=>navLinks.classList.toggle('open'));
-    navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));
-    document.getElementById('year').textContent=new Date().getFullYear();
-    document.querySelectorAll('[data-service]').forEach(link=>link.addEventListener('click',()=>{
-      const service=document.getElementById('service');
-      const wanted=link.dataset.service;
-      [...service.options].forEach(o=>{if(o.text===wanted)service.value=o.value;});
-    }));
-    document.getElementById('contactForm').addEventListener('submit',function(e){
-      e.preventDefault();
-      const name=document.getElementById('name').value.trim();
-      const business=document.getElementById('business').value.trim();
-      const service=document.getElementById('service').value;
-      const message=document.getElementById('message').value.trim();
-      const text=`Hello KRYNTOX Digital Studio!%0AName: ${encodeURIComponent(name)}%0ABusiness / Project: ${encodeURIComponent(business||'Not provided')}%0AService: ${encodeURIComponent(service)}%0ADetails: ${encodeURIComponent(message||'Please contact me to discuss.')}`;
-      window.open(`https://wa.me/917096620842?text=${text}`,'_blank','noopener');
-    });
-  </script>
-</body>
-</html>
+<div class="topline"><div class="container"><span>Creative editing for creators, celebrations & businesses</span><span>Jamnagar, Gujarat · India</span></div></div>
+<header><div class="container nav">
+<a class="brand" href="#home"><span class="brand-icon">K</span><span>KRYNTOX<small>EDIT • CREATE • GROW</small></span></a>
+<button class="menu" id="menuBtn" aria-label="Open menu">☰</button>
+<nav class="navlinks" id="navLinks"><a href="#home">Home</a><a href="#services">Services</a><a href="#about">About</a><a href="#process">Process</a><a href="#pricing">Pricing</a><a href="#contact">Contact</a></nav>
+<a class="btn btn-gold nav-cta" href="https://wa.me/917096620842?text=Hello%20KRYNTOX%2C%20I%20want%20to%20enquire%20about%20your%20editing%20services.">Get a Quote ↗</a>
+</div></header>
+<main>
+<section class="hero" id="home"><div class="container hero-grid"><div>
+<div class="eyebrow">Your Creative Editing Partner</div><h1>Make Every Frame <span>Stand Out.</span></h1>
+<p class="lead">Professional photo retouching and video editing for creators, celebrations and growing businesses. Share your idea and get a clear quote before work begins.</p>
+<div class="hero-actions"><a class="btn btn-gold" href="#contact">Start Your Project →</a><a class="btn btn-line" href="#services">Explore Services</a></div>
+<div class="trust"><span>Clear project scope</span><span>WhatsApp communication</span><span>Preview before delivery</span></div>
+</div><div class="hero-art"><div class="art-window"><div class="art-top"><i></i><i></i><i></i></div><div class="art-body"><div class="art-label">KRYNTOX CREATIVE STUDIO</div><div class="art-title">Your moments.<br><span style="color:#e8c982">Made memorable.</span></div><div class="art-grid"><div class="art-tile"><b>01</b>Photo Retouching</div><div class="art-tile"><b>02</b>Reels Editing</div><div class="art-tile"><b>03</b>Cinematic Video</div><div class="art-tile"><b>04</b>Wedding Highlights</div></div></div></div></div></div></section>
+<section id="services"><div class="container"><div class="section-head"><div class="eyebrow">What We Do</div><h2>Photo & Video Editing Services</h2><p>Choose a service, view the starting price and send your order directly on WhatsApp.</p></div>
+<h3 class="group-title">Photo Editing</h3><div class="service-grid">
+<article class="service-card"><div class="service-image"><div class="image-fallback">Face Retouching Sample</div><img src="https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Portrait sample for face retouching" loading="eager" onerror="this.style.display='none'"><span class="tag">Photo Editing</span></div><div class="service-content"><h4>Face Retouching</h4><p>Natural portrait touch-ups, skin cleanup and small blemish correction.</p><div class="service-foot"><div class="amount">₹99 <small>/ photo</small></div><a class="btn btn-line" href="#contact" data-service="Face Retouching">Order Now</a></div></div></article>
+<article class="service-card"><div class="service-image"><div class="image-fallback">Background Remove Sample</div><img src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Portrait sample for background removal" loading="eager" onerror="this.style.display='none'"><span class="tag">Photo Editing</span></div><div class="service-content"><h4>Background Remove</h4><p>Clean subject cut-out with a transparent or requested plain background.</p><div class="service-foot"><div class="amount">₹49 <small>/ photo</small></div><a class="btn btn-line" href="#contact" data-service="Background Remove">Order Now</a></div></div></article>
+<article class="service-card"><div class="service-image"><div class="image-fallback">Photo Blur Fix Sample</div><img src="https://images.pexels.com/photos/91227/pexels-photo-91227.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Portrait sample for photo blur fix" loading="eager" onerror="this.style.display='none'"><span class="tag">Photo Editing</span></div><div class="service-content"><h4>Photo Blur Fix</h4><p>Improve clarity and sharpness where the original photo contains recoverable detail.</p><div class="service-foot"><div class="amount">₹99 <small>/ photo</small></div><a class="btn btn-line" href="#contact" data-service="Photo Blur Fix">Order Now</a></div></div></article>
+<article class="service-card"><div class="service-image"><div class="image-fallback">Photo Restoration Sample</div><img src="https://images.pexels.com/photos/1983037/pexels-photo-1983037.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Vintage photo restoration sample" loading="eager" onerror="this.style.display='none'"><span class="tag">Photo Editing</span></div><div class="service-content"><h4>Photo Restoration</h4><p>Repair scratches, fading and minor damage in old photographs.</p><div class="service-foot"><div class="amount">₹199 <small>/ photo · starting</small></div><a class="btn btn-line" href="#contact" data-service="Photo Restoration">Order Now</a></div></div></article>
+</div>
+<h3 class="group-title">Video Editing</h3><div class="service-grid">
+<article class="service-card"><div class="service-image"><div class="image-fallback">Instagram Reels Sample</div><img src="https://images.pexels.com/photos/7518748/pexels-photo-7518748.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Video editing workstation sample" loading="eager" onerror="this.style.display='none'"><span class="tag">Video Editing</span></div><div class="service-content"><h4>Instagram Reels Editing</h4><p>Short vertical videos with cuts, captions, music and basic effects. 30–60 seconds.</p><div class="service-foot"><div class="amount">₹299 <small>/ reel</small></div><a class="btn btn-line" href="#contact" data-service="Instagram Reels Editing">Order Now</a></div></div></article>
+<article class="service-card"><div class="service-image"><div class="image-fallback">Cinematic Video Sample</div><img src="https://images.pexels.com/photos/3062541/pexels-photo-3062541.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Cinematic video production sample" loading="eager" onerror="this.style.display='none'"><span class="tag">Video Editing</span></div><div class="service-content"><h4>Cinematic Video Editing</h4><p>Short cinematic edits with pacing, transitions and basic colour grading.</p><div class="service-foot"><div class="amount">₹499 <small>/ starting</small></div><a class="btn btn-line" href="#contact" data-service="Cinematic Video Editing">Order Now</a></div></div></article>
+<article class="service-card"><div class="service-image"><div class="image-fallback">Wedding Video Sample</div><img src="https://images.pexels.com/photos/1444442/pexels-photo-1444442.jpeg?auto=compress&cs=tinysrgb&w=900" alt="Wedding highlight video sample" loading="eager" onerror="this.style.display='none'"><span class="tag">Video Editing</span></div><div class="service-content"><h4>Wedding Video Editing</h4><p>Short wedding highlight edit using your supplied footage. Full-length edits quoted separately.</p><div class="service-foot"><div class="amount">₹1,499 <small>/ starting</small></div><a class="btn btn-line" href="#contact" data-service="Wedding Video Editing">Order Now</a></div></div></article>
+</div></div></section>
+<section id="about"><div class="container about-grid"><div class="about-box"><div class="about-logo">KRYNTOX.</div><h3 style="font-size:1.3rem;margin-top:12px">Every Detail. Every Frame.</h3><p>Thoughtful editing, simple communication and clear deliverables for every project.</p></div><div class="about-copy"><div class="eyebrow">About The Studio</div><h2>Creative Editing That Brings Your Content Forward.</h2><p>KRYNTOX Digital Studio focuses on photo retouching and video editing for individuals, creators and growing businesses.</p><p>We agree on project scope, timeline, revisions and final price before starting, so you know what to expect.</p><div class="checks"><span>Photo retouching</span><span>Short-form video edits</span><span>Clear scope before work</span><span>WhatsApp communication</span></div></div></div></section>
+<section id="process"><div class="container"><div class="section-head"><div class="eyebrow">How It Works</div><h2>A Simple, Clear Process</h2><p>Know what happens next before your project begins.</p></div><div class="process-grid"><div class="step"><b>01</b><h3>Choose a Service</h3><p>Select the photo or video editing service you need.</p></div><div class="step"><b>02</b><h3>Share Your Files</h3><p>Send your photos, footage and instructions on WhatsApp.</p></div><div class="step"><b>03</b><h3>Review the Quote</h3><p>Confirm scope, timeline, revisions and price before work starts.</p></div><div class="step"><b>04</b><h3>Final Delivery</h3><p>Receive completed files after approval and agreed payment.</p></div></div></div></section>
+<section id="pricing"><div class="container"><div class="section-head"><div class="eyebrow">Starting Packages</div><h2>Simple Starting Prices</h2><p>Final quotes depend on the files, complexity and delivery requirements.</p></div><h3 class="group-title">Photo Editing</h3><div class="pricing-grid">
+<article class="price-card"><h4>Face Retouching</h4><div class="price">₹99</div><p>Per photo. Natural face and skin touch-up.</p><a class="btn btn-line" href="#contact" data-service="Face Retouching">Enquire Now</a></article>
+<article class="price-card"><h4>Background Remove</h4><div class="price">₹49</div><p>Per photo. Clean background cut-out.</p><a class="btn btn-line" href="#contact" data-service="Background Remove">Enquire Now</a></article>
+<article class="price-card"><h4>Photo Blur Fix</h4><div class="price">₹99</div><p>Per photo. Results depend on original image quality.</p><a class="btn btn-line" href="#contact" data-service="Photo Blur Fix">Enquire Now</a></article>
+<article class="price-card"><h4>Photo Restoration</h4><div class="price">₹199</div><p>Starting price per photo. Heavily damaged photos cost more.</p><a class="btn btn-line" href="#contact" data-service="Photo Restoration">Enquire Now</a></article>
+</div><h3 class="group-title" style="margin-top:32px">Video Editing</h3><div class="pricing-grid">
+<article class="price-card"><h4>Instagram Reels Editing</h4><div class="price">₹299</div><p>Per reel, 30–60 seconds. Basic cuts, captions and music.</p><a class="btn btn-line" href="#contact" data-service="Instagram Reels Editing">Enquire Now</a></article>
+<article class="price-card"><h4>Cinematic Video Editing</h4><div class="price">₹499+</div><p>Starting price for a short cinematic edit.</p><a class="btn btn-line" href="#contact" data-service="Cinematic Video Editing">Enquire Now</a></article>
+<article class="price-card"><h4>Wedding Video Editing</h4><div class="price">₹1,499+</div><p>Starting price for a short highlight. Full-length edits quoted separately.</p><a class="btn btn-line" href="#contact" data-service="Wedding Video Editing">Enquire Now</a></article>
+</div><p class="fineprint">Indicative starting prices. Confirm footage length, editing complexity, revisions, delivery time and payment terms before work begins.</p></div></section>
+<section id="contact"><div class="container"><div class="section-head"><div class="eyebrow">Let's Talk</div><h2>Tell Us About Your Project</h2><p>Send your requirements on WhatsApp. We will discuss the next steps.</p></div><div class="contact-grid">
+<div class="contact-card"><h3>Start a Conversation</h3><p>Need a photo retouch or video edit? Contact the studio directly.</p><div class="contact-line">WhatsApp<small>+91 70966 20842</small></div><div class="contact-line">Service Area<small>Jamnagar, Gujarat · Online projects across India</small></div><div class="contact-line">Working Style<small>Project scope and quote confirmed before starting</small></div><a class="btn btn-gold" style="width:100%;margin-top:18px" href="https://wa.me/917096620842?text=Hello%20KRYNTOX%2C%20I%20want%20to%20discuss%20a%20project.">Chat on WhatsApp ↗</a></div>
+<form class="form-card" id="contactForm"><h3>Quick Project Enquiry</h3><label for="name">Your Name</label><input id="name" name="name" placeholder="Enter your name" required><label for="business">Business / Project Name</label><input id="business" name="business" placeholder="Your business or project name"><label for="service">Service Required</label><select id="service" name="service" required><option value="">Choose a service</option><optgroup label="Photo Editing"><option>Face Retouching</option><option>Background Remove</option><option>Photo Blur Fix</option><option>Photo Restoration</option></optgroup><optgroup label="Video Editing"><option>Instagram Reels Editing</option><option>Cinematic Video Editing</option><option>Wedding Video Editing</option></optgroup></select><label for="message">Project Details</label><textarea id="message" name="message" placeholder="Tell us briefly what you need..."></textarea><button class="btn btn-gold" type="submit">Send Enquiry on WhatsApp ↗</button></form>
+</div></div></section>
+</main>
+<footer><div class="container footer-row"><span>© <span id="year"></span> KRYNTOX Digital Studio. All rights reserved.</span><span>Designed to make every frame stand out.</span></div></footer>
+<a class="wa-float" href="https://wa.me/917096620842?text=Hello%20KRYNTOX" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">☏</a>
+<script>
+const menuBtn=document.getElementById('menuBtn');const navLinks=document.getElementById('navLinks');menuBtn.addEventListener('click',()=>navLinks.classList.toggle('open'));navLinks.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>navLinks.classList.remove('open')));document.getElementById('year').textContent=new Date().getFullYear();
+document.querySelectorAll('[data-service]').forEach(link=>link.addEventListener('click',()=>{const select=document.getElementById('service');select.value=link.dataset.service;}));
+document.getElementById('contactForm').addEventListener('submit',function(e){e.preventDefault();const name=document.getElementById('name').value.trim();const business=document.getElementById('business').value.trim();const service=document.getElementById('service').value;const message=document.getElementById('message').value.trim();const text=`Hello KRYNTOX Digital Studio!\nName: ${name}\nBusiness / Project: ${business||'Not provided'}\nService: ${service}\nDetails: ${message||'Please contact me to discuss.'}`;window.open('https://wa.me/917096620842?text='+encodeURIComponent(text),'_blank','noopener');});
+</script>
+</body></html>
