@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#a7192d">
+<title>Digital Food Menu</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#fff9f2;color:#292321;font:15px Arial,sans-serif;padding-bottom:105px}
+header{background:#a7192d;color:white;padding:24px 18px;border-radius:0 0 20px 20px}
+header h1{margin:0;font-size:27px}
+header p{margin:7px 0 0;color:#ffe6a0}
+main{max-width:600px;margin:auto;padding:16px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px}
+.tabs button{white-space:nowrap;border:1px solid #a7192d;background:white;color:#a7192d;padding:10px 14px;border-radius:22px;font-weight:bold}
+.tabs button.active{background:#a7192d;color:white}
+h2{color:#a7192d;margin:12px 0}
+.item{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:14px 0;border-bottom:1px solid #eadfd7}
+.name{font-weight:600}
+.price{color:#8b5c45;margin-top:5px}
+.controls{display:flex;align-items:center;gap:10px}
+.controls button{width:34px;height:34px;border-radius:50%;border:1px solid #a7192d;background:white;color:#a7192d;font-size:20px}
+.controls button.plus{background:#a7192d;color:white}
+.qty{min-width:15px;text-align:center;font-weight:bold}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:white;padding:13px 16px;box-shadow:0 -3px 15px #0002}
+.summary{max-width:570px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.total{font-size:21px;font-weight:bold;color:#a7192d}
+.order{width:100%;max-width:570px;display:block;margin:10px auto 0;background:#a7192d;color:white;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:bold}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;z-index:5}
+.modal.show{display:flex}
+.sheet{background:white;width:100%;max-width:600px;margin:auto;padding:22px;border-radius:20px 20px 0 0;max-height:80vh;overflow:auto}
+.sheet h2{margin-top:0}
+.line{display:flex;justify-content:space-between;padding:8px 0}
+.close{background:#eee;color:#333}
+</style>
+</head>
+<body>
+
+<header>
+<h1>🍽️ DIGITAL FOOD MENU</h1>
+<p>SCAN • SELECT • ENJOY</p>
+</header>
+
+<main>
+<div class="tabs" id="tabs"></div>
+<h2 id="heading">Soup</h2>
+<div id="items"></div>
+</main>
+
+<div class="bottom">
+<div class="summary">
+<div>
+<div><b>Selected Items:</b> <span id="count">0</span></div>
+<div class="total" id="total">₹0</div>
+</div>
+<button class="order" style="width:auto;margin:0" onclick="showOrder()">View Order</button>
+</div>
+</div>
+
+<div class="modal" id="modal" onclick="if(event.target===this)closeOrder()">
+<div class="sheet">
+<h2>Your Order</h2>
+<div id="orderList"></div>
+<hr>
+<div class="line"><b>Total Amount</b><b id="finalTotal">₹0</b></div>
+<button class="order" onclick="closeOrder()">Continue Menu</button>
+</div>
+</div>
+
+<script>
+const menu={
+"Soup":[
+["Tomato soup",120],
+["Hot & Sour Veg soup",120],
+["Veg Manchow soup",120],
+["Chicken manchow soup",150]
+],
+"Veg Starters":[
+["Veg Manchurian",180],
+["Paneer Chilly",210],
+["Paneer Manchurian",200],
+["Crispy Corn",180],
+["Mushroom Chilly",200],
+["Mushroom Manchurian",200],
+["Hara Bhara Kabab",220],
+["Honey Chilly Potato",180],
+["French Fries",150],
+["Chana Roast",120],
+["Paneer 65",220],
+["Paneer Tikka",260],
+["Paneer Malai tikka",280],
+["Paneer Pakoda",250],
+["Paneer Majestic",220],
+["Veg Cutlet",220]
+],
+"South Indian":[
+["Idli Sambhar",60],
+["Plain Dosa",60],
+["Masala Dosa",80],
+["Cheese Dosa",120],
+["Paneer Dosa",120],
+["Onion Uttappam",90],
+["Mix veg uttappam",110],
+["Hyderabadi masala dosa",110],
+["Egg Masala dosa",100]
+],
+"Non Veg Starters":[
+["Crispy Chicken",220],
+["Chicken Roast",200],
+["Chicken 65",210],
+["Chilly Chicken Boneless",200],
+["Chilly Chicken With Bone",220],
+["Chicken Manchurian",200],
+["Chicken lollipop",250],
+["Chicken Bhuna",260],
+["Chicken Hariyali Kabab",260],
+["Chicken Majestic",260],
+["Chicken Banglori D Fry",280],
+["Fish Tawa Fry",180],
+["Chicken Tandoori",500],
+["Chicken Tandoori Half",300],
+["Chicken Afgani kabab",320],
+["Chicken Tikka",300],
+["Leg Piece Special",260]
+]
+};
+
+let selected={};
+let current="Soup";
+
+function money(n){
+return "₹"+n.toLocaleString("en-IN");
+}
+
+function renderTabs(){
+document.getElementById("tabs").innerHTML=
+Object.keys(menu).map(c=>
+`<button class="${c===current?'active':''}" onclick="changeCategory('${c}')">${c}</button>`
+).join("");
+}
+
+function changeCategory(c){
+current=c;
+renderTabs();
+renderItems();
+}
+
+function renderItems(){
+document.getElementById("heading").textContent=current;
+document.getElementById("items").innerHTML=
+menu[current].map(([name,price])=>`
+<div class="item">
+<div>
+<div class="name">${name}</div>
+<div class="price">${money(price)}</div>
+</div>
+<div class="controls">
+<button onclick="updateQty('${name}',-1)">−</button>
+<span class="qty" id="q-${menu[current].indexOf(menu[current].find(x=>x[0]===name))}-${current}">${selected[name]||0}</span>
+<button class="plus" onclick="updateQty('${name}',1)">+</button>
+</div>
+</div>
+`).join("");
+}
+
+function updateQty(name,change){
+selected[name]=Math.max(0,Math.min(99,(selected[name]||0)+change));
+if(selected[name]===0)delete selected[name];
+renderItems();
+updateTotal();
+}
+
+function allItems(){
+return Object.values(menu).flat();
+}
+
+function getTotal(){
+return allItems().reduce((sum,item)=>
+sum+(selected[item[0]]||0)*item[1],0);
+}
+
+function updateTotal(){
+let count=Object.values(selected).reduce((a,b)=>a+b,0);
+document.getElementById("count").textContent=count;
+document.getElementById("total").textContent=money(getTotal());
+}
+
+function showOrder(){
+let chosen=allItems().filter(x=>selected[x[0]]>0);
+if(!chosen.length){
+alert("Please select an item first!");
+return;
+}
+document.getElementById("orderList").innerHTML=
+chosen.map(([name,price])=>`
+<div class="line">
+<span>${name} × ${selected[name]}</span>
+<b>${money(price*selected[name])}</b>
+</div>`).join("");
+document.getElementById("finalTotal").textContent=money(getTotal());
+document.getElementById("modal").classList.add("show");
+}
+
+function closeOrder(){
+document.getElementById("modal").classList.remove("show");
+}
+
+renderTabs();
+renderItems();
+updateTotal();
+</script>
+</body>
+</html>
