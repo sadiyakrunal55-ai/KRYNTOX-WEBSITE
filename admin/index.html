@@ -1,0 +1,453 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b1220">
+<title>KRYNTOX QR MENU MAKER — Admin</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d30;--line:#27354b;--gold:#e6c77c;--text:#f5f7fb;--muted:#aab5c6;--red:#c83b4c;--green:#168b49}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
+#app{max-width:760px;margin:auto;padding:20px 16px 50px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+h1{font-size:22px;margin:0}
+h2{font-size:19px;margin:0 0 14px}
+button,input{font:inherit}
+button{cursor:pointer}
+.btn{border:1px solid var(--gold);background:var(--gold);color:#172033;border-radius:9px;padding:11px 14px;font-weight:bold}
+.btn.dark{background:transparent;color:var(--text);border-color:#60708a}
+.btn.red{background:transparent;color:#ff9da7;border-color:#a83c49}
+.btn.green{background:var(--green);border-color:var(--green);color:#fff}
+.wide{width:100%;margin-bottom:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0}
+.card strong{font-size:17px}
+.muted{color:var(--muted);font-size:13px;margin-top:5px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.field{margin:12px 0}
+.field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+input{width:100%;padding:12px;border:1px solid #46556b;border-radius:9px;background:#0c1525;color:#fff}
+.login{max-width:420px;margin:16vh auto 0;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+.login p{color:var(--muted);font-size:13px}
+.empty{text-align:center;color:var(--muted);padding:25px}
+#modal{position:fixed;inset:0;background:#000a;display:flex;align-items:flex-end;justify-content:center;z-index:5}
+#modal[hidden]{display:none}
+.sheet{background:#111c2e;border:1px solid var(--line);width:100%;max-width:620px;padding:20px;border-radius:18px 18px 0 0;max-height:90vh;overflow:auto}
+.item{display:flex;gap:12px;align-items:center}
+.item img,.placeholder{width:65px;height:65px;object-fit:cover;border-radius:9px;background:#25334a;flex:none}
+.grow{flex:1;min-width:0}
+.qrbox{text-align:center}
+.qrbox img{max-width:100%;width:320px;background:#fff;padding:8px;border-radius:8px}
+.url{word-break:break-all;color:var(--muted);font-size:12px;margin:12px 0}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#26354a;color:#fff;border:1px solid #53647d;border-radius:10px;padding:11px 15px;z-index:10;max-width:90%;display:none}
+@media(min-width:600px){.sheet{margin:auto;border-radius:18px}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal" hidden></div>
+<div id="toast"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const $=s=>document.querySelector(s), app=$("#app");
+let menus=[],items=[],current=null,photoData=null,qrData=null,qrName="restaurant";
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
+function toast(s){
+ const e=$("#toast");
+ e.textContent=s;
+ e.style.display="block";
+ clearTimeout(toast.t);
+ toast.t=setTimeout(()=>e.style.display="none",3200);
+}
+
+async function api(path,method="GET",body){
+ const r=await fetch("/api/"+path,{
+ method,
+ headers:body?{"content-type":"application/json"}:{},
+ body:body?JSON.stringify(body):undefined,
+ credentials:"same-origin"
+ });
+ const d=await r.json().catch(()=>({}));
+ if(r.status===401&&path!=="login"){
+  showLogin();
+  throw new Error("Login required");
+ }
+ if(!r.ok)throw new Error(d.error||"Something went wrong");
+ return d;
+}
+
+function modal(html){
+ $("#modal").innerHTML='<div class="sheet">'+html+'</div>';
+ $("#modal").hidden=false;
+}
+
+function closeModal(){
+ $("#modal").hidden=true;
+ $("#modal").innerHTML="";
+ photoData=null;
+}
+
+function showLogin(){
+ app.innerHTML=`
+ <section class="login">
+ <h1>KRYNTOX QR MENU MAKER</h1>
+ <p>Private owner login</p>
+ <form id="loginForm">
+ <div class="field">
+ <label>Admin Username</label>
+ <input id="username" autocomplete="username" required>
+ </div>
+ <div class="field">
+ <label>Password</label>
+ <input id="password" type="password" autocomplete="current-password" required>
+ </div>
+ <button class="btn wide">Login</button>
+ </form>
+ </section>`;
+
+ $("#loginForm").onsubmit=async e=>{
+  e.preventDefault();
+  try{
+   await api("login","POST",{
+    user:$("#username").value,
+    pass:$("#password").value
+   });
+   await loadMenus();
+  }catch(x){toast(x.message);}
+ };
+}
+
+async function loadMenus(){
+ menus=await api("menus");
+ app.innerHTML=`
+ <header>
+ <div>
+ <h1>KRYNTOX QR MENU MAKER</h1>
+ <div class="muted">Private Owner Dashboard</div>
+ </div>
+ <button class="btn dark" data-a="logout">Logout</button>
+ </header>
+ <button class="btn wide" data-a="newmenu">+ Add Restaurant</button>
+ ${menus.length?menus.map(m=>`
+ <article class="card">
+ <strong>${esc(m.name)}</strong>
+ <div class="muted">WhatsApp: +${esc(m.whatsapp)} · ${m.item_count} menu items</div>
+ <div class="row">
+ <button class="btn" data-a="items" data-id="${m.id}">Manage Menu</button>
+ <button class="btn dark" data-a="qr" data-id="${m.id}">QR Code</button>
+ <button class="btn dark" data-a="editmenu" data-id="${m.id}">Edit</button>
+ <button class="btn red" data-a="delmenu" data-id="${m.id}">Delete</button>
+ </div>
+ </article>`).join(""):`
+ <div class="empty">No restaurants yet. Tap “Add Restaurant” to create your first menu.</div>`}`;
+}
+
+function menuForm(m){
+ modal(`
+ <h2>${m?"Edit Restaurant":"Add Restaurant"}</h2>
+ <form id="menuForm">
+ <div class="field">
+ <label>Restaurant Name</label>
+ <input id="restaurantName" maxlength="80" value="${esc(m?.name||"")}" required>
+ </div>
+ <div class="field">
+ <label>Restaurant WhatsApp Number</label>
+ <input id="restaurantWhatsApp" type="tel" inputmode="tel" placeholder="10-digit number or 91 + number" value="${esc(m?.whatsapp||"")}" required>
+ </div>
+ <div class="row">
+ <button class="btn">Save Restaurant</button>
+ <button type="button" class="btn dark" data-a="close">Cancel</button>
+ </div>
+ </form>`);
+
+ $("#menuForm").onsubmit=async e=>{
+  e.preventDefault();
+  try{
+   const data={
+    name:$("#restaurantName").value,
+    whatsapp:$("#restaurantWhatsApp").value
+   };
+   await api(m?"menus/"+m.id:"menus",m?"PUT":"POST",data);
+   closeModal();
+   toast("Restaurant saved");
+   await loadMenus();
+  }catch(x){toast(x.message);}
+ };
+}
+
+async function openItems(id){
+ current=menus.find(m=>String(m.id)===String(id));
+ items=await api("menus/"+id+"/items");
+
+ app.innerHTML=`
+ <header>
+ <div>
+ <h1>${esc(current.name)}</h1>
+ <div class="muted">Menu Items</div>
+ </div>
+ <button class="btn dark" data-a="back">Back</button>
+ </header>
+ <button class="btn wide" data-a="newitem">+ Add Food Item</button>
+ ${items.length?items.map(i=>`
+ <article class="card item">
+ ${i.photo?`<img src="${i.photo}" alt="">`:'<div class="placeholder"></div>'}
+ <div class="grow">
+ <strong>${esc(i.name)}</strong>
+ <div class="muted">${esc(i.category)} · ₹${Number(i.price).toLocaleString("en-IN")}</div>
+ </div>
+ <div class="row">
+ <button class="btn dark" data-a="edititem" data-id="${i.id}">Edit</button>
+ <button class="btn red" data-a="delitem" data-id="${i.id}">Delete</button>
+ </div>
+ </article>`).join(""):`
+ <div class="empty">No food items yet. Add your first item.</div>`}`;
+}
+
+function itemForm(item){
+ photoData=undefined;
+
+ modal(`
+ <h2>${item?"Edit Food Item":"Add Food Item"}</h2>
+ <form id="itemForm">
+ <div class="field">
+ <label>Food Name</label>
+ <input id="foodName" maxlength="100" value="${esc(item?.name||"")}" required>
+ </div>
+ <div class="field">
+ <label>Category</label>
+ <input id="foodCategory" maxlength="50" placeholder="Soup, Starters, Main Course..." value="${esc(item?.category||"Other")}" required>
+ </div>
+ <div class="field">
+ <label>Price (₹)</label>
+ <input id="foodPrice" type="number" min="0" max="10000000" step="1" value="${item?.price??""}" required>
+ </div>
+ <div class="field">
+ <label>Food Photo (optional)</label>
+ <input id="foodPhoto" type="file" accept="image/*">
+ </div>
+ <div id="photoPreview">${item?.photo?`<img src="${item.photo}" style="width:100px;height:100px;object-fit:cover;border-radius:8px">`:''}</div>
+ ${item?.photo?'<label class="muted"><input type="checkbox" id="removePhoto" style="width:auto"> Remove current photo</label>':''}
+ <div class="row">
+ <button class="btn">Save Item</button>
+ <button type="button" class="btn dark" data-a="close">Cancel</button>
+ </div>
+ </form>`);
+
+ $("#foodPhoto").onchange=async e=>{
+  const f=e.target.files?.[0];
+  if(!f)return;
+  try{
+   photoData=await compressPhoto(f);
+   $("#photoPreview").innerHTML=`<img src="${photoData}" style="width:100px;height:100px;object-fit:cover;border-radius:8px">`;
+  }catch(x){toast(x.message);}
+ };
+
+ $("#itemForm").onsubmit=async e=>{
+  e.preventDefault();
+  try{
+   const data={
+    menu_id:current.id,
+    name:$("#foodName").value,
+    category:$("#foodCategory").value,
+    price:$("#foodPrice").value
+   };
+   if(photoData)data.photo=photoData;
+   if($("#removePhoto")?.checked)data.remove_photo=true;
+   await api(item?"items/"+item.id:"items",item?"PUT":"POST",data);
+   closeModal();
+   toast("Food item saved");
+   await openItems(current.id);
+  }catch(x){toast(x.message);}
+ };
+}
+
+function compressPhoto(file){
+ return new Promise((resolve,reject)=>{
+  if(!file.type.startsWith("image/"))return reject(new Error("Choose an image file."));
+  const reader=new FileReader();
+  reader.onerror=()=>reject(new Error("Could not read photo."));
+  reader.onload=()=>{
+   const img=new Image();
+   img.onerror=()=>reject(new Error("Invalid photo."));
+   img.onload=()=>{
+    const scale=Math.min(1,640/Math.max(img.width,img.height));
+    const c=document.createElement("canvas");
+    c.width=Math.round(img.width*scale);
+    c.height=Math.round(img.height*scale);
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    resolve(c.toDataURL("image/jpeg",.68));
+   };
+   img.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
+
+async function showQR(m){
+ const menuURL=location.origin+"/menu/?r="+encodeURIComponent(m.slug);
+ qrName=(m.slug||"restaurant")+"-QR.png";
+
+ modal(`
+ <h2>${esc(m.name)} — QR Code</h2>
+ <div class="qrbox" id="qrBox">Generating QR...</div>
+ <div class="url">${esc(menuURL)}</div>
+ <div class="row">
+ <button class="btn" data-a="downloadqr">Download PNG</button>
+ <button class="btn dark" data-a="printqr">Print QR</button>
+ <button class="btn dark" data-a="close">Close</button>
+ </div>`);
+
+ if(typeof QRCode==="undefined"){
+  $("#qrBox").textContent="QR generator library did not load. Refresh and try again.";
+  return;
+ }
+
+ const temp=document.createElement("div");
+ new QRCode(temp,{
+  text:menuURL,
+  width:420,
+  height:420,
+  colorDark:"#000000",
+  colorLight:"#ffffff",
+  correctLevel:QRCode.CorrectLevel.H
+ });
+
+ await new Promise(r=>setTimeout(r,120));
+ const qr=temp.querySelector("canvas")||temp.querySelector("img");
+
+ if(!qr){
+  $("#qrBox").textContent="Could not create QR. Please refresh.";
+  return;
+ }
+
+ const canvas=document.createElement("canvas");
+ canvas.width=560;
+ canvas.height=680;
+ const ctx=canvas.getContext("2d");
+
+ ctx.fillStyle="#fff";
+ ctx.fillRect(0,0,560,680);
+ ctx.fillStyle="#111";
+ ctx.textAlign="center";
+ ctx.font="bold 28px Arial";
+ ctx.fillText(m.name.slice(0,28),280,55);
+
+ if(qr.tagName==="CANVAS"){
+  ctx.drawImage(qr,70,90,420,420);
+ }else{
+  await new Promise(r=>{qr.onload=r;qr.onerror=r;});
+  ctx.drawImage(qr,70,90,420,420);
+ }
+
+ ctx.font="bold 24px Arial";
+ ctx.fillText("SCAN TO VIEW MENU",280,560);
+ ctx.font="16px Arial";
+ ctx.fillStyle="#555";
+ ctx.fillText("Order directly on WhatsApp",280,600);
+
+ qrData=canvas.toDataURL("image/png");
+ $("#qrBox").innerHTML=`<img src="${qrData}" alt="Restaurant QR Code">`;
+}
+
+function downloadQR(){
+ if(!qrData)return toast("QR not ready yet.");
+ const a=document.createElement("a");
+ a.href=qrData;
+ a.download=qrName;
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+}
+
+function printQR(){
+ if(!qrData)return toast("QR not ready yet.");
+ const w=window.open("","_blank");
+ if(!w)return toast("Allow popups to print QR.");
+ w.document.write(`
+ <!doctype html>
+ <title>Restaurant QR</title>
+ <body style="text-align:center;font-family:Arial">
+ <img src="${qrData}" style="width:100%;max-width:560px" onload="window.print()">
+ </body>`);
+ w.document.close();
+}
+
+document.addEventListener("click",async e=>{
+ const b=e.target.closest("[data-a]");
+ if(!b)return;
+ const a=b.dataset.a,id=b.dataset.id;
+
+ try{
+  switch(a){
+   case"logout":
+    await api("logout","POST");
+    showLogin();
+    break;
+
+   case"newmenu":
+    menuForm();
+    break;
+
+   case"editmenu":
+    menuForm(menus.find(x=>String(x.id)===String(id)));
+    break;
+
+   case"delmenu":
+    if(confirm("Delete this restaurant and all its food items?")){
+     await api("menus/"+id,"DELETE");
+     toast("Restaurant deleted");
+     await loadMenus();
+    }
+    break;
+
+   case"items":
+    await openItems(id);
+    break;
+
+   case"back":
+    await loadMenus();
+    break;
+
+   case"newitem":
+    itemForm();
+    break;
+
+   case"edititem":
+    itemForm(items.find(x=>String(x.id)===String(id)));
+    break;
+
+   case"delitem":
+    if(confirm("Delete this food item?")){
+     await api("items/"+id,"DELETE");
+     await openItems(current.id);
+    }
+    break;
+
+   case"qr":
+    await showQR(menus.find(x=>String(x.id)===String(id)));
+    break;
+
+   case"downloadqr":
+    downloadQR();
+    break;
+
+   case"printqr":
+    printQR();
+    break;
+
+   case"close":
+    closeModal();
+    break;
+  }
+ }catch(x){toast(x.message);}
+});
+
+api("me").then(loadMenus).catch(showLogin);
+</script>
+</body>
+</html>
