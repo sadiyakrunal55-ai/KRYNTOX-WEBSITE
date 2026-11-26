@@ -12,6 +12,7 @@ function response(data, status = 200) {
 function base64url(bytes) {
   let binary = "";
   for (const b of bytes) binary += String.fromCharCode(b);
+
   return btoa(binary)
     .replace(/\+/g, "-")
     .replace(/\//g, "_")
@@ -28,19 +29,21 @@ async function sign(value, secret) {
   );
 
   const signature = await crypto.subtle.sign(
-    "HMAC", key, new TextEncoder().encode(value)
+    "HMAC",
+    key,
+    new TextEncoder().encode(value)
   );
 
   return base64url(new Uint8Array(signature));
 }
 
 async function createSession(env) {
-  const payload = base64url(new TextEncoder().encode(
-    JSON.stringify({
+  const payload = base64url(
+    new TextEncoder().encode(JSON.stringify({
       admin: true,
       exp: Date.now() + 7 * 24 * 60 * 60 * 1000
-    })
-  ));
+    }))
+  );
 
   return payload + "." + await sign(payload, env.SESSION_SECRET);
 }
@@ -55,14 +58,22 @@ async function isAdmin(request, env) {
   if (parts.length !== 2) return false;
 
   const expected = await sign(parts[0], env.SESSION_SECRET);
+
   if (expected !== parts[1]) return false;
 
   try {
+    let encoded = parts[0]
+      .replace(/-/g, "+")
+      .replace(/_/g, "/");
+
+    encoded += "=".repeat((4 - encoded.length % 4) % 4);
+
     const payload = JSON.parse(
-      atob(parts[0].replace(/-/g, "+").replace(/_/g, "/"))
+      atob(encoded)
     );
 
-    return payload.admin === true && payload.exp > Date.now();
+    return payload.admin === true &&
+      payload.exp > Date.now();
   } catch {
     return false;
   }
@@ -72,9 +83,26 @@ async function body(request) {
   return await request.json();
 }
 
+function makeSlug(name) {
+  const slug = String(name || "")
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  return slug || "restaurant";
+}
+
 export async function onRequest({ request, env }) {
-  if (!env.DB || !env.ADMIN_PASSWORD || !env.SESSION_SECRET) {
-    return response({ error: "Backend configuration missing." }, 500);
+  if (
+    !env.DB ||
+    !env.ADMIN_USERNAME ||
+    !env.ADMIN_PASSWORD ||
+    !env.SESSION_SECRET
+  ) {
+    return response({
+      error: "Backend configuration missing."
+    }, 500);
   }
 
   const url = new URL(request.url);
@@ -82,40 +110,53 @@ export async function onRequest({ request, env }) {
   const method = request.method;
 
   try {
+
     // ADMIN LOGIN
     if (path === "login" && method === "POST") {
       const data = await body(request);
 
-      if (data.password !== env.ADMIN_PASSWORD) {
-        return response({ error: "Incorrect password" }, 401);
+      if (
+        data.username !== env.ADMIN_USERNAME ||
+        data.password !== env.ADMIN_PASSWORD
+      ) {
+        return response({
+          error: "Incorrect username or password"
+        }, 401);
       }
 
       const token = await createSession(env);
 
-      return new Response(JSON.stringify({ success: true }), {
-        headers: {
-          ...CORS_HEADERS,
-          "Set-Cookie":
-            `kryntox_session=${token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800`
+      return new Response(
+        JSON.stringify({ success: true }),
+        {
+          headers: {
+            ...CORS_HEADERS,
+            "Set-Cookie":
+              `kryntox_session=${token}; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=604800`
+          }
         }
-      });
+      );
     }
 
     // ADMIN LOGOUT
     if (path === "logout" && method === "POST") {
-      return new Response(JSON.stringify({ success: true }), {
-        headers: {
-          ...CORS_HEADERS,
-          "Set-Cookie":
-            "kryntox_session=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0"
+      return new Response(
+        JSON.stringify({ success: true }),
+        {
+          headers: {
+            ...CORS_HEADERS,
+            "Set-Cookie":
+              "kryntox_session=; HttpOnly; Secure; SameSite=Strict; Path=/; Max-Age=0"
+          }
         }
-      });
+      );
     }
 
     // CHECK LOGIN
     if (path === "me" && method === "GET") {
-      const loggedIn = await isAdmin(request, env);
-      return response({ loggedIn });
+      return response({
+        loggedIn: await isAdmin(request, env)
+      });
     }
 
     // PUBLIC RESTAURANT MENU
@@ -123,63 +164,105 @@ export async function onRequest({ request, env }) {
       const slug = decodeURIComponent(path.slice(5));
 
       const restaurant = await env.DB.prepare(
-        "SELECT id,name,slug FROM restaurants WHERE slug=?"
+        "SELECT id,name,slug,whatsapp FROM restaurants WHERE slug=?"
       ).bind(slug).first();
 
       if (!restaurant) {
-        return response({ error: "Menu not found" }, 404);
+        return response({
+          error: "Menu not found"
+        }, 404);
       }
 
-      const items = await env.DB.prepare(
-        "SELECT id,category,name,price FROM items WHERE restaurant_id=? AND active=1 ORDER BY sort_order,id"
+      const result = await env.DB.prepare(
+        "SELECT id,category,name,price,photo FROM items WHERE restaurant_id=? AND active=1 ORDER BY sort_order,id"
       ).bind(restaurant.id).all();
 
       return response({
         restaurant,
-        items: items.results
+        items: result.results
       });
     }
 
     // PRIVATE ADMIN ROUTES
     if (!(await isAdmin(request, env))) {
-      return response({ error: "Unauthorized" }, 401);
+      return response({
+        error: "Unauthorized"
+      }, 401);
     }
 
-    // RESTAURANT LIST
-    if (path === "restaurants" && method === "GET") {
-      const result = await env.DB.prepare(
-        "SELECT * FROM restaurants ORDER BY created_at DESC"
-      ).all();
+    // LIST RESTAURANTS / MENUS
+    if (path === "menus" && method === "GET") {
+      const result = await env.DB.prepare(`
+        SELECT
+          r.*,
+          COUNT(i.id) AS item_count
+        FROM restaurants r
+        LEFT JOIN items i
+          ON i.restaurant_id = r.id
+        GROUP BY r.id
+        ORDER BY r.created_at DESC
+      `).all();
 
       return response(result.results);
     }
 
     // ADD RESTAURANT
-    if (path === "restaurants" && method === "POST") {
+    if (path === "menus" && method === "POST") {
       const data = await body(request);
 
-      if (!data.name || !data.slug || !data.whatsapp) {
-        return response({ error: "Name, slug and WhatsApp required" }, 400);
+      if (!data.name || !data.whatsapp) {
+        return response({
+          error: "Restaurant name and WhatsApp required"
+        }, 400);
       }
 
       const id = crypto.randomUUID();
+      const base = makeSlug(data.name);
+
+      let slug = base;
+      let counter = 1;
+
+      while (await env.DB.prepare(
+        "SELECT id FROM restaurants WHERE slug=?"
+      ).bind(slug).first()) {
+        slug = `${base}-${counter++}`;
+      }
 
       await env.DB.prepare(
         "INSERT INTO restaurants (id,name,slug,whatsapp) VALUES (?,?,?,?)"
-      ).bind(id, data.name, data.slug, data.whatsapp).run();
+      ).bind(
+        id,
+        data.name.trim(),
+        slug,
+        data.whatsapp.trim()
+      ).run();
 
-      return response({ success: true, id });
+      return response({
+        success: true,
+        id,
+        slug
+      });
     }
 
-    // EDIT OR DELETE RESTAURANT
-    let match = path.match(/^restaurants\/([^/]+)$/);
+    // EDIT / DELETE RESTAURANT
+    let match = path.match(/^menus\/([^/]+)$/);
 
     if (match && method === "PUT") {
       const data = await body(request);
 
+      if (!data.name || !data.whatsapp) {
+        return response({
+          error: "Restaurant name and WhatsApp required"
+        }, 400);
+      }
+
       await env.DB.prepare(
-        "UPDATE restaurants SET name=?,slug=?,whatsapp=? WHERE id=?"
-      ).bind(data.name, data.slug, data.whatsapp, match[1]).run();
+        "UPDATE restaurants SET name=?,whatsapp=? WHERE id=?"
+      ).bind(
+        data.name.trim(),
+        data.whatsapp.trim(),
+        match[1]
+      ).run();
 
       return response({ success: true });
     }
@@ -193,16 +276,12 @@ export async function onRequest({ request, env }) {
     }
 
     // LIST FOOD ITEMS
-    if (path === "items" && method === "GET") {
-      const restaurantId = url.searchParams.get("restaurant_id");
+    match = path.match(/^menus\/([^/]+)\/items$/);
 
-      if (!restaurantId) {
-        return response({ error: "Restaurant ID required" }, 400);
-      }
-
+    if (match && method === "GET") {
       const result = await env.DB.prepare(
         "SELECT * FROM items WHERE restaurant_id=? ORDER BY sort_order,id"
-      ).bind(restaurantId).all();
+      ).bind(match[1]).all();
 
       return response(result.results);
     }
@@ -211,35 +290,94 @@ export async function onRequest({ request, env }) {
     if (path === "items" && method === "POST") {
       const data = await body(request);
 
-      if (!data.restaurant_id || !data.name ||
-          !data.category || !Number.isFinite(Number(data.price)) ||
-          Number(data.price) < 0) {
-        return response({ error: "Invalid food item details" }, 400);
+      if (
+        !data.menu_id ||
+        !data.name ||
+        !data.category ||
+        !Number.isFinite(Number(data.price)) ||
+        Number(data.price) < 0
+      ) {
+        return response({
+          error: "Invalid food item details"
+        }, 400);
+      }
+
+      const restaurant = await env.DB.prepare(
+        "SELECT id FROM restaurants WHERE id=?"
+      ).bind(data.menu_id).first();
+
+      if (!restaurant) {
+        return response({
+          error: "Restaurant not found"
+        }, 404);
       }
 
       const id = crypto.randomUUID();
 
       await env.DB.prepare(
-        "INSERT INTO items (id,restaurant_id,category,name,price) VALUES (?,?,?,?,?)"
+        `INSERT INTO items
+        (id,restaurant_id,category,name,price,photo)
+        VALUES (?,?,?,?,?,?)`
       ).bind(
-        id, data.restaurant_id, data.category,
-        data.name, Number(data.price)
+        id,
+        data.menu_id,
+        data.category.trim(),
+        data.name.trim(),
+        Number(data.price),
+        data.photo || null
       ).run();
 
-      return response({ success: true, id });
+      return response({
+        success: true,
+        id
+      });
     }
 
-    // EDIT OR DELETE FOOD ITEM
+    // EDIT / DELETE FOOD ITEM
     match = path.match(/^items\/([^/]+)$/);
 
     if (match && method === "PUT") {
       const data = await body(request);
 
+      if (
+        !data.name ||
+        !data.category ||
+        !Number.isFinite(Number(data.price)) ||
+        Number(data.price) < 0
+      ) {
+        return response({
+          error: "Invalid food item details"
+        }, 400);
+      }
+
+      const existing = await env.DB.prepare(
+        "SELECT photo FROM items WHERE id=?"
+      ).bind(match[1]).first();
+
+      if (!existing) {
+        return response({
+          error: "Food item not found"
+        }, 404);
+      }
+
+      let photo = existing.photo;
+
+      if (data.remove_photo === true) {
+        photo = null;
+      } else if (data.photo) {
+        photo = data.photo;
+      }
+
       await env.DB.prepare(
-        "UPDATE items SET category=?,name=?,price=?,active=? WHERE id=?"
+        `UPDATE items
+         SET category=?,name=?,price=?,photo=?
+         WHERE id=?`
       ).bind(
-        data.category, data.name, Number(data.price),
-        data.active === false ? 0 : 1, match[1]
+        data.category.trim(),
+        data.name.trim(),
+        Number(data.price),
+        photo,
+        match[1]
       ).run();
 
       return response({ success: true });
@@ -253,9 +391,15 @@ export async function onRequest({ request, env }) {
       return response({ success: true });
     }
 
-    return response({ error: "API route not found" }, 404);
+    return response({
+      error: "API route not found"
+    }, 404);
 
   } catch (error) {
-    return response({ error: "Server error" }, 500);
+    console.error("KRYNTOX API ERROR:", error);
+
+    return response({
+      error: "Server error"
+    }, 500);
   }
 }
