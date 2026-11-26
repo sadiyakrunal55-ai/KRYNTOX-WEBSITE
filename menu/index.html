@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#a7192d">
 <title>Digital Food Menu</title>
+
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#fff9f2;color:#292321;font:15px Arial,sans-serif;padding-bottom:105px}
@@ -23,20 +24,58 @@ h2{color:#a7192d;margin:12px 0}
 .controls button{width:34px;height:34px;border-radius:50%;border:1px solid #a7192d;background:white;color:#a7192d;font-size:20px}
 .controls button.plus{background:#a7192d;color:white}
 .qty{min-width:15px;text-align:center;font-weight:bold}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:white;padding:13px 16px;box-shadow:0 -3px 15px #0002}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:white;padding:13px 16px;box-shadow:0 -3px 15px #0002;z-index:4}
 .summary{max-width:570px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:10px}
 .total{font-size:21px;font-weight:bold;color:#a7192d}
 .order{width:100%;max-width:570px;display:block;margin:10px auto 0;background:#a7192d;color:white;border:0;border-radius:12px;padding:14px;font-size:16px;font-weight:bold}
 .whatsapp{background:#168b49}
-.whatsapp:disabled{opacity:.45}
 .modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;z-index:5}
 .modal.show{display:flex}
 .sheet{background:white;width:100%;max-width:600px;margin:auto;padding:22px;border-radius:20px 20px 0 0;max-height:85vh;overflow:auto}
 .sheet h2{margin-top:0}
 .line{display:flex;justify-content:space-between;gap:12px;padding:8px 0}
 .note{font-size:12px;color:#777;text-align:center}
+
+/* QR GENERATOR */
+.qr-section{
+max-width:570px;
+margin:20px auto;
+padding:22px 16px;
+background:white;
+border-radius:16px;
+text-align:center;
+box-shadow:0 2px 12px #0000000d;
+}
+.qr-section h2{margin-top:0}
+.qr-section p{color:#777;font-size:13px}
+#qrcode{
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:230px;
+margin:18px auto;
+}
+#qrcode img,#qrcode canvas{
+max-width:100%;
+height:auto;
+}
+.qr-btn{
+width:100%;
+max-width:400px;
+padding:13px;
+margin:7px auto;
+border:0;
+border-radius:10px;
+background:#a7192d;
+color:white;
+font-size:15px;
+font-weight:bold;
+}
+.qr-btn.print{background:#333}
+.qr-note{font-size:12px;color:#888;margin-top:10px}
 </style>
 </head>
+
 <body>
 
 <header>
@@ -50,33 +89,68 @@ h2{color:#a7192d;margin:12px 0}
 <div id="items"></div>
 </main>
 
+<!-- QR GENERATOR -->
+<section class="qr-section">
+<h2>My Menu QR Code</h2>
+<p>Scan to View Digital Menu</p>
+
+<div id="qrcode">
+Loading QR Code...
+</div>
+
+<button class="qr-btn" onclick="downloadQR()">
+⬇ Download QR PNG
+</button>
+
+<button class="qr-btn print" onclick="printQR()">
+🖨 Print QR Code
+</button>
+
+<div class="qr-note">
+Simple Black & White QR Code
+</div>
+</section>
+
+<!-- BOTTOM ORDER BAR -->
 <div class="bottom">
 <div class="summary">
 <div>
 <div><b>Selected Items:</b> <span id="count">0</span></div>
 <div class="total" id="total">₹0</div>
 </div>
-<button class="order" style="width:auto;margin:0" onclick="showOrder()">View Order</button>
+<button class="order" style="width:auto;margin:0" onclick="showOrder()">
+View Order
+</button>
 </div>
 </div>
 
+<!-- ORDER MODAL -->
 <div class="modal" id="modal" onclick="if(event.target===this)closeOrder()">
 <div class="sheet">
 <h2>Your Order</h2>
 <div id="orderList"></div>
 <hr>
-<div class="line"><b>Total Amount</b><b id="finalTotal">₹0</b></div>
-<button class="order whatsapp" id="sendOrder" onclick="sendWhatsApp()">Send Order on WhatsApp</button>
+<div class="line">
+<b>Total Amount</b>
+<b id="finalTotal">₹0</b>
+</div>
+<button class="order whatsapp" onclick="sendWhatsApp()">
+Send Order on WhatsApp
+</button>
 <p class="note">WhatsApp will open with your order details.</p>
 <button class="order" onclick="closeOrder()">Continue Menu</button>
 </div>
 </div>
 
+<!-- QR LIBRARY -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <script>
-// Add your WhatsApp number later.
-// Format: country code + number, digits only.
+
+// WHATSAPP NUMBER
 const WHATSAPP_NUMBER = "917096620842";
 
+// FOOD MENU
 const menu={
 "Soup":[
 ["Tomato soup",120],
@@ -84,6 +158,7 @@ const menu={
 ["Veg Manchow soup",120],
 ["Chicken manchow soup",150]
 ],
+
 "Veg Starters":[
 ["Veg Manchurian",180],
 ["Paneer Chilly",210],
@@ -102,6 +177,7 @@ const menu={
 ["Paneer Majestic",220],
 ["Veg Cutlet",220]
 ],
+
 "South Indian":[
 ["Idli Sambhar",60],
 ["Plain Dosa",60],
@@ -113,6 +189,7 @@ const menu={
 ["Hyderabadi masala dosa",110],
 ["Egg Masala dosa",100]
 ],
+
 "Non Veg Starters":[
 ["Crispy Chicken",220],
 ["Chicken Roast",200],
@@ -141,10 +218,12 @@ function money(n){
 return "₹"+n.toLocaleString("en-IN");
 }
 
+// CATEGORY TABS
 function renderTabs(){
 document.getElementById("tabs").innerHTML=
 Object.keys(menu).map(c=>
-`<button class="${c===current?'active':''}" onclick="changeCategory('${c}')">${c}</button>`
+`<button class="${c===current?'active':''}"
+onclick="changeCategory('${c}')">${c}</button>`
 ).join("");
 }
 
@@ -154,8 +233,10 @@ renderTabs();
 renderItems();
 }
 
+// FOOD ITEMS
 function renderItems(){
 document.getElementById("heading").textContent=current;
+
 document.getElementById("items").innerHTML=
 menu[current].map(([name,price])=>`
 <div class="item">
@@ -163,18 +244,24 @@ menu[current].map(([name,price])=>`
 <div class="name">${name}</div>
 <div class="price">${money(price)}</div>
 </div>
+
 <div class="controls">
-<button aria-label="Decrease ${name}" onclick="updateQty('${name}',-1)">−</button>
+<button onclick="updateQty('${name}',-1)">−</button>
 <span class="qty">${selected[name]||0}</span>
-<button class="plus" aria-label="Increase ${name}" onclick="updateQty('${name}',1)">+</button>
+<button class="plus" onclick="updateQty('${name}',1)">+</button>
 </div>
 </div>
 `).join("");
 }
 
 function updateQty(name,change){
-selected[name]=Math.max(0,Math.min(99,(selected[name]||0)+change));
+selected[name]=Math.max(
+0,
+Math.min(99,(selected[name]||0)+change)
+);
+
 if(selected[name]===0)delete selected[name];
+
 renderItems();
 updateTotal();
 }
@@ -183,6 +270,7 @@ function allItems(){
 return Object.values(menu).flat();
 }
 
+// TOTAL CALCULATION
 function getTotal(){
 return allItems().reduce((sum,item)=>
 sum+(selected[item[0]]||0)*item[1],0);
@@ -190,12 +278,16 @@ sum+(selected[item[0]]||0)*item[1],0);
 
 function updateTotal(){
 let count=Object.values(selected).reduce((a,b)=>a+b,0);
+
 document.getElementById("count").textContent=count;
 document.getElementById("total").textContent=money(getTotal());
 }
 
+// ORDER SUMMARY
 function showOrder(){
+
 let chosen=allItems().filter(x=>selected[x[0]]>0);
+
 if(!chosen.length){
 alert("Please select an item first!");
 return;
@@ -206,21 +298,26 @@ chosen.map(([name,price])=>`
 <div class="line">
 <span>${name} × ${selected[name]}</span>
 <b>${money(price*selected[name])}</b>
-</div>`).join("");
+</div>
+`).join("");
 
 document.getElementById("finalTotal").textContent=money(getTotal());
+
 document.getElementById("modal").classList.add("show");
 }
 
+// WHATSAPP ORDER
 function sendWhatsApp(){
+
 const number=WHATSAPP_NUMBER.replace(/\D/g,"");
 
 if(!number){
-alert("WhatsApp number is not configured yet. Please add it in the code first.");
+alert("WhatsApp number is not configured.");
 return;
 }
 
 const chosen=allItems().filter(x=>selected[x[0]]>0);
+
 if(!chosen.length)return;
 
 const lines=chosen.map(([name,price],i)=>
@@ -231,6 +328,7 @@ const message=
 `*New Food Order*\n\n${lines.join("\n")}\n\n*Total: ${money(getTotal())}*`;
 
 const url="https://wa.me/"+number+"?text="+encodeURIComponent(message);
+
 window.open(url,"_blank");
 }
 
@@ -238,9 +336,108 @@ function closeOrder(){
 document.getElementById("modal").classList.remove("show");
 }
 
+// QR CODE GENERATOR
+function generateQR(){
+
+const box=document.getElementById("qrcode");
+box.innerHTML="";
+
+if(typeof QRCode==="undefined"){
+box.textContent="QR Library could not load. Please refresh.";
+return;
+}
+
+new QRCode(box,{
+text:window.location.origin+window.location.pathname,
+width:240,
+height:240,
+colorDark:"#000000",
+colorLight:"#ffffff",
+correctLevel:QRCode.CorrectLevel.H
+});
+
+}
+
+// GET QR IMAGE
+function getQRImage(){
+
+const box=document.getElementById("qrcode");
+const canvas=box.querySelector("canvas");
+const img=box.querySelector("img");
+
+if(canvas)return canvas.toDataURL("image/png");
+
+if(img && img.src)return img.src;
+
+return null;
+}
+
+// DOWNLOAD QR
+function downloadQR(){
+
+const url=getQRImage();
+
+if(!url){
+alert("QR Code is not ready. Please refresh.");
+return;
+}
+
+const a=document.createElement("a");
+
+a.href=url;
+a.download="KRYNTOX-Menu-QR.png";
+document.body.appendChild(a);
+a.click();
+a.remove();
+
+}
+
+// PRINT QR
+function printQR(){
+
+const url=getQRImage();
+
+if(!url){
+alert("QR Code is not ready. Please refresh.");
+return;
+}
+
+const w=window.open("","_blank");
+
+if(!w){
+alert("Please allow popups to print QR.");
+return;
+}
+
+w.document.write(`
+<!DOCTYPE html>
+<html>
+<head>
+<title>Menu QR Code</title>
+</head>
+<body style="text-align:center;font-family:Arial;padding:25px">
+<h2>Scan to View Menu</h2>
+<img src="${url}" style="width:280px;height:280px">
+<p>Digital Food Menu</p>
+<script>
+window.onload=function(){
+window.print();
+};
+<\/script>
+</body>
+</html>
+`);
+
+w.document.close();
+
+}
+
+// START APPLICATION
 renderTabs();
 renderItems();
 updateTotal();
+generateQR();
+
 </script>
 </body>
 </html>
