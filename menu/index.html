@@ -8,12 +8,13 @@
 
 <style>
 *{box-sizing:border-box}
+
 :root{
  --red:#a7192d;
  --cream:#fff9f2;
  --ink:#292321;
- --gold:#f5dca4;
 }
+
 body{
  margin:0;
  background:var(--cream);
@@ -21,6 +22,9 @@ body{
  font:15px Arial,sans-serif;
  padding-bottom:125px;
 }
+
+/* HEADER */
+
 header{
  background:linear-gradient(135deg,#8e1024,#c12b40);
  color:white;
@@ -28,18 +32,29 @@ header{
  border-radius:0 0 22px 22px;
  box-shadow:0 5px 18px #6d10221f;
 }
-header h1{margin:0;font-size:25px}
+
+header h1{
+ margin:0;
+ font-size:25px;
+}
+
 header p{
  margin:7px 0 0;
  color:#ffe6a0;
  font-size:12px;
  letter-spacing:1.4px;
 }
+
+/* MAIN */
+
 main{
  max-width:650px;
  margin:auto;
  padding:15px 16px 20px;
 }
+
+/* CATEGORY TABS */
+
 .tabs{
  display:flex;
  gap:8px;
@@ -47,7 +62,11 @@ main{
  padding:4px 0 14px;
  scrollbar-width:none;
 }
-.tabs::-webkit-scrollbar{display:none}
+
+.tabs::-webkit-scrollbar{
+ display:none;
+}
+
 .tabs button{
  white-space:nowrap;
  border:1px solid var(--red);
@@ -58,36 +77,44 @@ main{
  font-weight:bold;
  font-size:13px;
 }
+
 .tabs button.active{
  background:var(--red);
  color:white;
  box-shadow:0 3px 10px #a7192d33;
 }
 
-/* CATEGORY PHOTO BANNER */
+/* CATEGORY BANNER */
+
 .category-hero{
  position:relative;
  height:190px;
  border-radius:18px;
  overflow:hidden;
- margin:2px 0 17px;
+ margin:2px 0 18px;
  background:#3b2520;
  box-shadow:0 7px 18px #48231620;
 }
+
 .category-hero img{
  width:100%;
  height:100%;
  object-fit:cover;
  display:block;
 }
+
 .category-hero:after{
  content:"";
  position:absolute;
  inset:0;
  background:linear-gradient(
-  90deg,#170b0bd9 0%,#170b0b55 60%,transparent 100%
+  90deg,
+  #170b0bd9 0%,
+  #170b0b55 60%,
+  transparent 100%
  );
 }
+
 .hero-copy{
  position:absolute;
  z-index:1;
@@ -96,6 +123,7 @@ main{
  color:white;
  text-shadow:0 2px 8px #0008;
 }
+
 .hero-copy span{
  display:block;
  font-size:11px;
@@ -105,69 +133,68 @@ main{
  font-weight:bold;
  margin-bottom:5px;
 }
+
 .hero-copy h2{
  font-size:26px;
  margin:0;
  color:white;
 }
+
+/* SECTION LABEL */
+
 .section-label{
  font-size:12px;
  color:#8b7468;
  font-weight:bold;
  letter-spacing:1.2px;
  text-transform:uppercase;
- margin:0 2px 8px;
+ margin:0 2px 7px;
 }
 
-/* FOOD ITEM CARDS */
+/* FOOD LIST */
+
 .item{
  display:flex;
  align-items:center;
  justify-content:space-between;
- gap:10px;
- padding:12px;
- margin:10px 0;
- background:#fff;
- border:1px solid #f0e4da;
- border-radius:15px;
- box-shadow:0 4px 12px #542b1810;
- transition:transform .15s,box-shadow .15s;
-}
-.item:active{
- transform:scale(.99);
-}
-.item-info{
- display:flex;
- align-items:center;
  gap:12px;
+ padding:15px 4px;
+ margin:0;
+ background:transparent;
+ border:0;
+ border-bottom:1px solid #eadfd7;
+ border-radius:0;
+ box-shadow:none;
+}
+
+.item-info{
+ display:block;
+ flex:1;
  min-width:0;
 }
-.food-photo{
- width:82px;
- height:82px;
- object-fit:cover;
- border-radius:12px;
- flex:none;
- background:#f2e8df;
- box-shadow:0 2px 7px #00000012;
-}
+
 .name{
- font-weight:700;
- line-height:1.3;
+ font-weight:600;
+ line-height:1.4;
  font-size:14px;
 }
+
 .price{
- color:var(--red);
- margin-top:6px;
+ color:#8b5c45;
+ margin-top:5px;
  font-size:14px;
- font-weight:bold;
+ font-weight:normal;
 }
+
+/* QUANTITY BUTTONS */
+
 .controls{
  display:flex;
  align-items:center;
- gap:8px;
+ gap:9px;
  flex:none;
 }
+
 .controls button{
  width:32px;
  height:32px;
@@ -177,23 +204,30 @@ main{
  color:var(--red);
  font-size:20px;
  line-height:1;
+ cursor:pointer;
 }
+
 .controls button.plus{
  background:var(--red);
  color:white;
 }
+
 .qty{
  min-width:15px;
  text-align:center;
  font-weight:bold;
 }
+
+/* EMPTY / LOADING */
+
 .status{
  text-align:center;
  padding:35px 10px;
  color:#777;
 }
 
-/* FIXED ORDER BAR */
+/* BOTTOM ORDER BAR */
+
 .bottom{
  position:fixed;
  bottom:0;
@@ -204,6 +238,7 @@ main{
  box-shadow:0 -3px 18px #0002;
  z-index:4;
 }
+
 .summary{
  max-width:570px;
  margin:auto;
@@ -212,12 +247,14 @@ main{
  align-items:center;
  gap:10px;
 }
+
 .total{
  font-size:21px;
  font-weight:bold;
  color:var(--red);
  margin-top:3px;
 }
+
 .order{
  width:100%;
  max-width:570px;
@@ -230,10 +267,15 @@ main{
  padding:13px;
  font-size:15px;
  font-weight:bold;
+ cursor:pointer;
 }
-.whatsapp{background:#168b49}
 
-/* ORDER POPUP */
+.whatsapp{
+ background:#168b49;
+}
+
+/* ORDER MODAL */
+
 .modal{
  position:fixed;
  inset:0;
@@ -242,7 +284,11 @@ main{
  align-items:flex-end;
  z-index:5;
 }
-.modal.show{display:flex}
+
+.modal.show{
+ display:flex;
+}
+
 .sheet{
  background:white;
  width:100%;
@@ -253,34 +299,54 @@ main{
  max-height:85vh;
  overflow:auto;
 }
+
 .sheet h2{
  margin:0 0 14px;
  color:var(--red);
 }
+
 .line{
  display:flex;
  justify-content:space-between;
  gap:12px;
- padding:8px 0;
+ padding:9px 0;
  border-bottom:1px solid #f0e8e2;
 }
+
 .note{
  text-align:center;
  font-size:12px;
  color:#777;
 }
+
+/* RESPONSIVE */
+
 @media(min-width:600px){
- .category-hero{height:230px}
- .item{padding:14px}
- .sheet{border-radius:20px}
+ .category-hero{
+  height:230px;
+ }
+ .item{
+  padding:16px 5px;
+ }
+ .sheet{
+  border-radius:20px;
+ }
 }
+
 @media(max-width:380px){
- .category-hero{height:165px}
- .controls{gap:5px}
- .controls button{width:29px;height:29px}
- .food-photo{width:68px;height:68px}
- .item{padding:10px}
- .name{font-size:13px}
+ .category-hero{
+  height:165px;
+ }
+ .controls{
+  gap:6px;
+ }
+ .controls button{
+  width:30px;
+  height:30px;
+ }
+ .item{
+  padding:13px 2px;
+ }
 }
 </style>
 </head>
@@ -293,39 +359,87 @@ main{
 </header>
 
 <main>
+
  <div class="tabs" id="tabs"></div>
+
  <div id="categoryHero"></div>
- <div class="section-label">Freshly prepared favourites</div>
- <div id="items" class="status">Loading menu...</div>
+
+ <div class="section-label">
+  Freshly prepared favourites
+ </div>
+
+ <div id="items" class="status">
+  Loading menu...
+ </div>
+
 </main>
 
+<!-- BOTTOM ORDER BAR -->
+
 <div class="bottom">
+
  <div class="summary">
+
   <div>
-   <div><b>Selected Items:</b> <span id="count">0</span></div>
-   <div class="total" id="total">₹0</div>
+   <div>
+    <b>Selected Items:</b>
+    <span id="count">0</span>
+   </div>
+
+   <div class="total" id="total">
+    ₹0
+   </div>
   </div>
-  <button class="order" style="width:auto;margin:0"
-   onclick="showOrder()">View Order</button>
+
+  <button
+   class="order"
+   style="width:auto;margin:0"
+   onclick="showOrder()">
+   View Order
+  </button>
+
  </div>
+
 </div>
 
-<div class="modal" id="modal"
+<!-- ORDER POPUP -->
+
+<div
+ class="modal"
+ id="modal"
  onclick="if(event.target===this)closeOrder()">
+
  <div class="sheet">
+
   <h2>Your Order</h2>
+
   <div id="orderList"></div>
+
   <hr>
+
   <div class="line">
    <b>Total Amount</b>
    <b id="finalTotal">₹0</b>
   </div>
-  <button class="order whatsapp" onclick="sendWhatsApp()">
+
+  <button
+   class="order whatsapp"
+   onclick="sendWhatsApp()">
    Send Order on WhatsApp
   </button>
-  <p class="note">WhatsApp will open with your order details.</p>
-  <button class="order" onclick="closeOrder()">Continue Menu</button>
+
+  <p class="note">
+   WhatsApp will open with your order details.
+  </p>
+
+  <button
+   class="order"
+   onclick="closeOrder()">
+   Continue Menu
+  </button>
+
  </div>
+
 </div>
 
 <script>
@@ -338,52 +452,61 @@ let menuItems=[];
 let selected={};
 let currentCategory="";
 
-const slug=new URLSearchParams(location.search).get("r");
+const slug=
+ new URLSearchParams(location.search).get("r");
 
-/* CATEGORY FOOD PHOTOS */
+/* CATEGORY BANNER PHOTOS */
 
 const visuals=[
+
  {
   re:/burger/i,
   title:"Burgers",
   tag:"Juicy • Fresh • Delicious",
   image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=85"
  },
+
  {
   re:/pizza/i,
   title:"Pizza",
   tag:"Hot from the oven",
   image:"https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=85"
  },
+
  {
   re:/sandwich/i,
   title:"Sandwiches",
   tag:"Grilled • Toasted • Tasty",
   image:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=1200&q=85"
  },
+
  {
   re:/fries/i,
   title:"Fries",
   tag:"Crispy in every bite",
   image:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=1200&q=85"
  },
+
  {
   re:/drink|beverage/i,
   title:"Drinks",
   tag:"Cool • Creamy • Refreshing",
   image:"https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=1200&q=85"
  }
+
 ];
 
 const fallback=
  "https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=85";
 
-function money(v){
- return "₹"+Number(v).toLocaleString("en-IN");
+/* HELPERS */
+
+function money(value){
+ return "₹"+Number(value).toLocaleString("en-IN");
 }
 
-function esc(v){
- return String(v??"").replace(/[&<>"']/g,c=>({
+function esc(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({
   "&":"&amp;",
   "<":"&lt;",
   ">":"&gt;",
@@ -393,25 +516,18 @@ function esc(v){
 }
 
 function visualFor(category){
- return visuals.find(v=>v.re.test(category||""))||
- {
+
+ return visuals.find(v=>
+  v.re.test(category||"")
+ )||{
   title:category||"Our Menu",
   tag:"Made fresh for you",
   image:fallback
  };
+
 }
 
-/* ITEM PHOTO:
-   Uploaded photo first.
-   Otherwise category photo.
-*/
-
-function foodImage(item){
- if(item.photo)return item.photo;
- return visualFor(item.category).image;
-}
-
-/* LOAD MENU */
+/* LOAD RESTAURANT MENU */
 
 async function loadMenu(){
 
@@ -423,14 +539,18 @@ async function loadMenu(){
   "/api/menu/"+encodeURIComponent(slug),
   {
    cache:"no-store",
-   headers:{"Accept":"application/json"}
+   headers:{
+    "Accept":"application/json"
+   }
   }
  );
 
  const data=await res.json().catch(()=>({}));
 
  if(!res.ok){
-  throw new Error(data.error||"Menu loading failed.");
+  throw new Error(
+   data.error||"Menu loading failed."
+  );
  }
 
  if(!data.restaurant){
@@ -438,10 +558,14 @@ async function loadMenu(){
  }
 
  restaurant=data.restaurant;
- menuItems=Array.isArray(data.items)?data.items:[];
+
+ menuItems=Array.isArray(data.items)
+  ?data.items:[ ];
 
  $("restaurantName").textContent=restaurant.name;
- document.title=restaurant.name+" - Food Menu";
+
+ document.title=
+  restaurant.name+" - Food Menu";
 
  renderTabs();
 
@@ -450,19 +574,27 @@ async function loadMenu(){
  }else{
   $("items").innerHTML=
    '<div class="status">Menu items are not available yet.</div>';
+
   $("categoryHero").innerHTML="";
  }
 
  updateTotal();
+
 }
 
 /* CATEGORIES */
 
 function categories(){
+
  return [
-  ...new Set(menuItems.map(i=>i.category).filter(Boolean))
+  ...new Set(
+   menuItems.map(i=>i.category).filter(Boolean)
+  )
  ];
+
 }
+
+/* CATEGORY TABS */
 
 function renderTabs(){
 
@@ -472,77 +604,96 @@ function renderTabs(){
   currentCategory=list[0]||"";
  }
 
- $("tabs").innerHTML=list.map(c=>`
+ $("tabs").innerHTML=list.map(category=>`
+
   <button
-   class="${c===currentCategory?"active":""}"
-   data-category="${esc(c)}">
-   ${esc(c)}
+   class="${category===currentCategory?"active":""}"
+   data-category="${esc(category)}">
+
+   ${esc(category)}
+
   </button>
+
  `).join("");
 
- $("tabs").querySelectorAll("button").forEach(b=>{
-  b.addEventListener("click",()=>{
-   currentCategory=b.dataset.category;
+ $("tabs").querySelectorAll("button")
+ .forEach(button=>{
+
+  button.addEventListener("click",()=>{
+
+   currentCategory=button.dataset.category;
+
    renderTabs();
    renderItems();
+
   });
+
  });
+
 }
 
 /* CATEGORY BANNER */
 
 function renderHero(){
 
- const v=visualFor(currentCategory);
+ const visual=visualFor(currentCategory);
 
  $("categoryHero").innerHTML=`
+
   <section class="category-hero">
+
    <img
-    src="${v.image}"
-    alt="${esc(v.title)} food"
+    src="${visual.image}"
+    alt="${esc(visual.title)} food"
     loading="lazy"
     onerror="this.onerror=null;this.src='${fallback}'"
    >
+
    <div class="hero-copy">
-    <span>${esc(v.tag)}</span>
-    <h2>${esc(v.title)}</h2>
+
+    <span>${esc(visual.tag)}</span>
+
+    <h2>${esc(visual.title)}</h2>
+
    </div>
+
   </section>
+
  `;
+
 }
 
-/* FOOD ITEMS WITH PHOTOS */
+/* FOOD LIST - NO ITEM PHOTOS */
 
 function renderItems(){
 
  renderHero();
 
- const list=menuItems.filter(
-  i=>i.category===currentCategory
+ const list=menuItems.filter(item=>
+  item.category===currentCategory
  );
 
  if(!list.length){
+
   $("items").innerHTML=
    '<div class="status">No food items in this category.</div>';
+
   return;
+
  }
 
- $("items").innerHTML=list.map(i=>`
+ $("items").innerHTML=list.map(item=>`
+
   <div class="item">
 
    <div class="item-info">
 
-    <img
-     class="food-photo"
-     src="${esc(foodImage(i))}"
-     alt="${esc(i.name)}"
-     loading="lazy"
-     onerror="this.onerror=null;this.src='${fallback}'"
-    >
+    <div class="name">
+     ${esc(item.name)}
+    </div>
 
-    <div>
-     <div class="name">${esc(i.name)}</div>
-     <div class="price">${money(i.price)}</div>
+    <div class="price">
+     ${money(item.price)}
     </div>
 
    </div>
@@ -551,167 +702,233 @@ function renderItems(){
 
     <button
      aria-label="Remove one"
-     data-id="${esc(i.id)}"
-     data-change="-1">−</button>
+     data-id="${esc(item.id)}"
+     data-change="-1">
+     −
+    </button>
 
-    <span class="qty">${selected[i.id]||0}</span>
+    <span class="qty">
+     ${selected[item.id]||0}
+    </span>
 
     <button
      class="plus"
      aria-label="Add one"
-     data-id="${esc(i.id)}"
-     data-change="1">+</button>
+     data-id="${esc(item.id)}"
+     data-change="1">
+     +
+    </button>
 
    </div>
 
   </div>
+
  `).join("");
 
  $("items").querySelectorAll("[data-change]")
- .forEach(b=>{
-  b.addEventListener("click",()=>{
+ .forEach(button=>{
+
+  button.addEventListener("click",()=>{
+
    updateQty(
-    b.dataset.id,
-    Number(b.dataset.change)
+    button.dataset.id,
+    Number(button.dataset.change)
    );
+
   });
+
  });
+
 }
 
 /* QUANTITY */
 
-function updateQty(id,d){
+function updateQty(id,change){
 
- const item=menuItems.find(
-  i=>String(i.id)===String(id)
+ const item=menuItems.find(i=>
+  String(i.id)===String(id)
  );
 
  if(!item)return;
 
  selected[id]=Math.max(
   0,
-  Math.min(99,(selected[id]||0)+d)
+  Math.min(99,(selected[id]||0)+change)
  );
 
- if(!selected[id])delete selected[id];
+ if(selected[id]===0){
+  delete selected[id];
+ }
 
  renderItems();
  updateTotal();
+
 }
 
 /* TOTAL */
 
-function total(){
+function getTotal(){
 
- return menuItems.reduce((s,i)=>{
-  return s+(selected[i.id]||0)*Number(i.price);
+ return menuItems.reduce((sum,item)=>{
+
+  return sum+
+   (selected[item.id]||0)*Number(item.price);
+
  },0);
+
 }
 
 function updateTotal(){
 
- $("count").textContent=
-  Object.values(selected).reduce((s,n)=>s+n,0);
+ const count=Object.values(selected).reduce(
+  (sum,qty)=>sum+qty,
+  0
+ );
 
- $("total").textContent=money(total());
+ $("count").textContent=count;
+ $("total").textContent=money(getTotal());
+
 }
 
 /* ORDER PREVIEW */
 
 function showOrder(){
 
- const chosen=menuItems.filter(
-  i=>selected[i.id]>0
+ const chosen=menuItems.filter(item=>
+  selected[item.id]>0
  );
 
  if(!chosen.length){
+
   alert("Please select an item first!");
+
   return;
+
  }
 
- $("orderList").innerHTML=chosen.map(i=>`
+ $("orderList").innerHTML=chosen.map(item=>`
+
   <div class="line">
-   <span>${esc(i.name)} × ${selected[i.id]}</span>
-   <b>${money(Number(i.price)*selected[i.id])}</b>
+
+   <span>
+    ${esc(item.name)} × ${selected[item.id]}
+   </span>
+
+   <b>
+    ${money(
+     Number(item.price)*selected[item.id]
+    )}
+   </b>
+
   </div>
+
  `).join("");
 
- $("finalTotal").textContent=money(total());
+ $("finalTotal").textContent=money(getTotal());
 
  $("modal").classList.add("show");
+
 }
 
 /* WHATSAPP NUMBER */
 
-function indianNumber(v){
+function indianNumber(value){
 
- let n=String(v||"").replace(/\D/g,"");
+ let number=String(value||"").replace(/\D/g,"");
 
- if(n.startsWith("0091"))n=n.slice(2);
+ if(number.startsWith("0091")){
+  number=number.slice(2);
+ }
 
- if(n.startsWith("91")&&n.length===12)return n;
+ if(number.startsWith("91")&&number.length===12){
+  return number;
+ }
 
- if(n.startsWith("0")&&n.length===11)n=n.slice(1);
+ if(number.startsWith("0")&&number.length===11){
+  number=number.slice(1);
+ }
 
- if(n.length===10)return "91"+n;
+ if(number.length===10){
+  return "91"+number;
+ }
 
- return n;
+ return number;
+
 }
 
-/* SEND ORDER */
+/* SEND WHATSAPP ORDER */
 
 function sendWhatsApp(){
 
- const number=indianNumber(restaurant?.whatsapp);
+ const number=indianNumber(
+  restaurant?.whatsapp
+ );
 
  if(!/^[1-9]\d{9,14}$/.test(number)){
+
   alert(
    "Restaurant WhatsApp number is missing or invalid. Please ask the owner to update it."
   );
+
   return;
+
  }
 
- const chosen=menuItems.filter(
-  i=>selected[i.id]>0
+ const chosen=menuItems.filter(item=>
+  selected[item.id]>0
  );
 
  if(!chosen.length)return;
 
- const lines=chosen.map((i,n)=>
-  `${n+1}. ${i.name} x ${selected[i.id]} = ${
-   money(Number(i.price)*selected[i.id])
+ const lines=chosen.map((item,index)=>
+
+  `${index+1}. ${item.name} x ${selected[item.id]} = ${
+   money(
+    Number(item.price)*selected[item.id]
+   )
   }`
+
  );
 
- const msg=
+ const message=
   `*New Food Order - ${restaurant.name}*\n\n`+
   lines.join("\n")+
-  `\n\n*Total: ${money(total())}*`;
+  `\n\n*Total: ${money(getTotal())}*`;
 
- const url=
-  "https://wa.me/"+number+"?text="+encodeURIComponent(msg);
+ const whatsappURL=
+  "https://wa.me/"+number+
+  "?text="+encodeURIComponent(message);
 
- window.open(url,"_blank");
+ window.open(whatsappURL,"_blank");
+
 }
 
+/* CLOSE ORDER */
+
 function closeOrder(){
+
  $("modal").classList.remove("show");
+
 }
 
 /* START */
 
-loadMenu().catch(err=>{
+loadMenu().catch(error=>{
+
+ console.error("MENU ERROR:",error);
 
  $("items").innerHTML=`
-  <div class="status">${esc(err.message)}</div>
+  <div class="status">
+   ${esc(error.message)}
+  </div>
  `;
 
  $("tabs").innerHTML="";
  $("categoryHero").innerHTML="";
 
- console.error("MENU ERROR:",err);
 });
 
 </script>
+
 </body>
 </html>
