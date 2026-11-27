@@ -8,144 +8,761 @@
 <title>KRYNTOX QR MENU MAKER</title>
 <style>
 :root{--bg:#0b1220;--panel:#121d30;--line:#27354b;--gold:#e6c77c;--text:#f5f7fb;--muted:#aab5c6;--red:#c83b4c}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
-#app{max-width:760px;margin:auto;padding:20px 16px 50px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
-h1{font-size:22px;margin:0}h2{font-size:19px;margin:0 0 14px}button,input{font:inherit}button{cursor:pointer}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:15px Arial,sans-serif}
+#app{max-width:760px;margin:auto;padding:20px 16px 50px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+h1{font-size:22px;margin:0}h2{font-size:19px;margin:0 0 14px}
+button,input{font:inherit}button{cursor:pointer}
 .btn{border:1px solid var(--gold);background:var(--gold);color:#172033;border-radius:9px;padding:11px 14px;font-weight:bold}
-.btn.dark{background:transparent;color:white;border-color:#60708a}.btn.red{background:transparent;color:#ff9da7;border-color:#a83c49}.btn.wide{width:100%;margin-bottom:14px}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0}.card strong{font-size:17px}
-.muted{color:var(--muted);font-size:13px;margin-top:5px}.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.field{margin:12px 0}
+.btn.dark{background:transparent;color:white;border-color:#60708a}
+.btn.red{background:transparent;color:#ff9da7;border-color:#a83c49}
+.btn.wide{width:100%;margin-bottom:12px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:15px;margin:12px 0}
+.card strong{font-size:17px}
+.muted{color:var(--muted);font-size:13px;margin-top:5px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.field{margin:12px 0}
 .field label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
 input{width:100%;padding:12px;border:1px solid #46556b;border-radius:9px;background:#0c1525;color:white}
 .login{max-width:420px;margin:16vh auto 0;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
-.login p{color:var(--muted);font-size:13px}.empty{text-align:center;color:var(--muted);padding:25px}
-#modal{position:fixed;inset:0;background:#000a;display:flex;align-items:flex-end;justify-content:center;z-index:5}#modal[hidden]{display:none}
+.login p{color:var(--muted);font-size:13px}
+.empty{text-align:center;color:var(--muted);padding:25px}
+#modal{position:fixed;inset:0;background:#000a;display:flex;align-items:flex-end;justify-content:center;z-index:5}
+#modal[hidden]{display:none}
 .sheet{background:#111c2e;border:1px solid var(--line);width:100%;max-width:620px;padding:20px;border-radius:18px 18px 0 0;max-height:90vh;overflow:auto}
-.item{display:flex;gap:12px;align-items:center}.item img,.placeholder{width:65px;height:65px;object-fit:cover;border-radius:9px;background:#25334a;flex:none}
-.grow{flex:1;min-width:0}.qrbox{text-align:center}.qrbox img{max-width:100%;width:320px;background:white;padding:8px;border-radius:8px}
+.item{display:flex;gap:12px;align-items:center}
+.item img,.placeholder{width:65px;height:65px;object-fit:cover;border-radius:9px;background:#25334a;flex:none}
+.grow{flex:1;min-width:0}
+.qrbox{text-align:center}
+.qrbox img{max-width:100%;width:320px;background:white;padding:8px;border-radius:8px}
 .url{word-break:break-all;color:var(--muted);font-size:12px;margin:12px 0}
-#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#26354a;color:white;border:1px solid #53647d;border-radius:10px;padding:11px 15px;z-index:10;max-width:90%;display:none}
 .scan-row{border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;background:#0c1525}
-.progress{height:8px;background:#26354a;border-radius:20px;overflow:hidden;margin:12px 0}.progress div{height:100%;width:0;background:var(--gold)}
+.progress{height:8px;background:#26354a;border-radius:20px;overflow:hidden;margin:12px 0}
+.progress div{height:100%;width:0;background:var(--gold)}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#26354a;color:white;border:1px solid #53647d;border-radius:10px;padding:11px 15px;z-index:10;max-width:90%;display:none}
 @media(min-width:600px){.sheet{margin:auto;border-radius:18px}}
 </style>
 </head>
 <body>
-<div id="app"></div><div id="modal" hidden></div><div id="toast"></div>
+<div id="app"></div>
+<div id="modal" hidden></div>
+<div id="toast"></div>
+
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
 <script>
 "use strict";
-const $=s=>document.querySelector(s),app=$("#app");
-let menus=[],items=[],current=null,photoData=null,qrData=null,qrName="restaurant-QR.png",scanRows=[];
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function toast(message){const e=$("#toast");e.textContent=message;e.style.display="block";clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.style.display="none",3500)}
-async function api(path,method="GET",data){const options={method,credentials:"same-origin",headers:{}};if(data!==undefined){options.headers["Content-Type"]="application/json";options.body=JSON.stringify(data)}const r=await fetch("/api/"+path,options);const result=await r.json().catch(()=>({}));if(r.status===401&&path!=="login"){showLogin();throw new Error("Session expired. Please login again.")}if(!r.ok)throw new Error(result.error||"Request failed");return result}
-function modal(html){$("#modal").innerHTML='<div class="sheet">'+html+'</div>';$("#modal").hidden=false}
-function closeModal(){$("#modal").hidden=true;$("#modal").innerHTML="";photoData=null;qrData=null}
-function showLogin(){app.innerHTML=`<section class="login"><h1>KRYNTOX QR MENU MAKER</h1><p>Private Owner Login</p><form id="loginForm"><div class="field"><label>Admin Username</label><input id="username" autocomplete="username" required></div><div class="field"><label>Password</label><input id="password" type="password" autocomplete="current-password" required></div><button class="btn wide">Login</button></form></section>`;$("#loginForm").onsubmit=async e=>{e.preventDefault();const button=e.submitter;button.disabled=true;try{await api("login","POST",{username:$("#username").value.trim(),password:$("#password").value});await loadMenus()}catch(error){toast(error.message)}finally{button.disabled=false}}}
-async function loadMenus(){menus=await api("menus");app.innerHTML=`<header><div><h1>KRYNTOX QR MENU MAKER</h1><div class="muted">Private Owner Dashboard</div></div><button class="btn dark" data-a="logout">Logout</button></header><button class="btn wide" data-a="newmenu">+ Add Restaurant</button>${menus.length?menus.map(m=>`<article class="card"><strong>${esc(m.name)}</strong><div class="muted">WhatsApp: +${esc(m.whatsapp)} · ${Number(m.item_count)||0} menu items</div><div class="row"><button class="btn" data-a="items" data-id="${m.id}">Manage Menu</button><button class="btn dark" data-a="qr" data-id="${m.id}">QR Code</button><button class="btn dark" data-a="editmenu" data-id="${m.id}">Edit</button><button class="btn red" data-a="delmenu" data-id="${m.id}">Delete</button></div></article>`).join(""):`<div class="empty">No restaurants yet. Add your first restaurant.</div>`}`}
-function menuForm(m){modal(`<h2>${m?"Edit Restaurant":"Add Restaurant"}</h2><form id="menuForm"><div class="field"><label>Restaurant Name</label><input id="restaurantName" maxlength="80" value="${esc(m?.name||"")}" required></div><div class="field"><label>WhatsApp Number</label><input id="restaurantWhatsApp" type="tel" inputmode="tel" maxlength="15" placeholder="91XXXXXXXXXX" value="${esc(m?.whatsapp||"")}" required></div><div class="row"><button class="btn">Save Restaurant</button><button type="button" class="btn dark" data-a="close">Cancel</button></div></form>`);$("#menuForm").onsubmit=async e=>{e.preventDefault();try{const data={name:$("#restaurantName").value.trim(),whatsapp:$("#restaurantWhatsApp").value.trim()};await api(m?"menus/"+m.id:"menus",m?"PUT":"POST",data);closeModal();toast("Restaurant saved successfully");await loadMenus()}catch(error){toast(error.message)}}}
-async function openItems(id){current=menus.find(m=>String(m.id)===String(id));if(!current)throw new Error("Restaurant not found");items=await api("menus/"+id+"/items");app.innerHTML=`<header><div><h1>${esc(current.name)}</h1><div class="muted">Manage Food Items</div></div><button class="btn dark" data-a="back">Back</button></header><button class="btn wide" data-a="newitem">+ Add Food Item</button><button class="btn wide" data-a="scanmenu">📷 Scan Menu Photo & Import Items</button>
-${current.name.trim().toLowerCase()==="muralidhar" ? `
-<button class="btn wide" data-a="importmuralidhar">Import Verified Muralidhar Menu (23 Items)</button>
-` : ""}${items.length?items.map(i=>`<article class="card item">${i.photo?`<img src="${esc(i.photo)}" alt="">`:'<div class="placeholder"></div>'}<div class="grow"><strong>${esc(i.name)}</strong><div class="muted">${esc(i.category)} · ₹${Number(i.price).toLocaleString("en-IN")}</div></div><div class="row"><button class="btn dark" data-a="edititem" data-id="${i.id}">Edit</button><button class="btn red" data-a="delitem" data-id="${i.id}">Delete</button></div></article>`).join(""):`<div class="empty">No food items yet.</div>`}`}
-function itemForm(item){photoData=null;modal(`<h2>${item?"Edit Food Item":"Add Food Item"}</h2><form id="itemForm"><div class="field"><label>Food Name</label><input id="foodName" maxlength="100" value="${esc(item?.name||"")}" required></div><div class="field"><label>Category</label><input id="foodCategory" maxlength="50" value="${esc(item?.category||"Other")}" required></div><div class="field"><label>Price (₹)</label><input id="foodPrice" type="number" min="0" max="10000000" step="1" value="${item?.price??""}" required></div><div class="field"><label>Food Photo</label><input id="foodPhoto" type="file" accept="image/*"></div><div id="photoPreview">${item?.photo?`<img src="${esc(item.photo)}" style="width:100px;height:100px;object-fit:cover">`:""}</div>${item?.photo?`<label class="muted"><input type="checkbox" id="removePhoto" style="width:auto"> Remove current photo</label>`:""}<div class="row"><button class="btn">Save Item</button><button type="button" class="btn dark" data-a="close">Cancel</button></div></form>`);$("#foodPhoto").onchange=async e=>{const file=e.target.files?.[0];if(!file)return;try{photoData=await compressPhoto(file);$("#photoPreview").innerHTML=`<img src="${photoData}" style="width:100px;height:100px;object-fit:cover">`}catch(error){toast(error.message)}};$("#itemForm").onsubmit=async e=>{e.preventDefault();try{const data={menu_id:current.id,name:$("#foodName").value.trim(),category:$("#foodCategory").value.trim(),price:$("#foodPrice").value};if(photoData)data.photo=photoData;if($("#removePhoto")?.checked)data.remove_photo=true;await api(item?"items/"+item.id:"items",item?"PUT":"POST",data);closeModal();toast("Food item saved successfully");await openItems(current.id)}catch(error){toast(error.message)}}}
-function compressPhoto(file){return new Promise((resolve,reject)=>{if(!file.type.startsWith("image/"))return reject(new Error("Choose an image file"));const reader=new FileReader();reader.onerror=()=>reject(new Error("Photo reading failed"));reader.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error("Invalid photo"));img.onload=()=>{const scale=Math.min(1,640/Math.max(img.width,img.height)),canvas=document.createElement("canvas");canvas.width=Math.round(img.width*scale);canvas.height=Math.round(img.height*scale);canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL("image/jpeg",0.68))};img.src=reader.result};reader.readAsDataURL(file)})}
 
-// Universal OCR menu scanner: same feature for every restaurant.
-function openMenuScanner(){scanRows=[];modal(`<h2>Menu Photo Scanner</h2><p class="muted">Restaurant: <strong>${esc(current.name)}</strong>. Upload a clear printed menu photo. Review every result before importing.</p><div class="field"><label>Menu Photo</label><input id="menuScanPhoto" type="file" accept="image/*"></div><button class="btn wide" data-a="startscan">Scan Menu Photo</button><div id="scanStatus" class="muted">English printed text works best. Blurry photos and complex layouts may be misread.</div><div class="progress"><div id="scanProgress"></div></div><div id="scanPreview"></div><button class="btn dark" data-a="close">Close</button>`)}
+const $=s=>document.querySelector(s);
+const app=$("#app");
+
+let menus=[];
+let items=[];
+let current=null;
+let photoData=null;
+let qrData=null;
+let qrName="restaurant-QR.png";
+let scanRows=[];
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({
+ "&":"&amp;","<":"&lt;",">":"&gt;",
+ '"':"&quot;","'":"&#39;"
+}[c]));
+
+function toast(message){
+ const e=$("#toast");
+ e.textContent=message;
+ e.style.display="block";
+ clearTimeout(toast.timer);
+ toast.timer=setTimeout(()=>e.style.display="none",3500);
+}
+
+async function api(path,method="GET",data){
+ const options={method,credentials:"same-origin",headers:{}};
+
+ if(data!==undefined){
+  options.headers["Content-Type"]="application/json";
+  options.body=JSON.stringify(data);
+ }
+
+ const r=await fetch("/api/"+path,options);
+ const result=await r.json().catch(()=>({}));
+
+ if(r.status===401&&path!=="login"){
+  showLogin();
+  throw new Error("Session expired. Please login again.");
+ }
+
+ if(!r.ok)throw new Error(result.error||"Request failed");
+ return result;
+}
+
+function modal(html){
+ $("#modal").innerHTML='<div class="sheet">'+html+'</div>';
+ $("#modal").hidden=false;
+}
+
+function closeModal(){
+ $("#modal").hidden=true;
+ $("#modal").innerHTML="";
+ photoData=null;
+ qrData=null;
+}
+
+// WHATSAPP: OWNER ENTERS ONLY 10 DIGITS
+
+function onlyTenDigits(value){
+ let digits=String(value||"").replace(/\D/g,"");
+ if(digits.startsWith("91")&&digits.length===12){
+  digits=digits.slice(2);
+ }
+ return digits;
+}
+
+function showLogin(){
+ app.innerHTML=`
+ <section class="login">
+  <h1>KRYNTOX QR MENU MAKER</h1>
+  <p>Private Owner Login</p>
+  <form id="loginForm">
+   <div class="field">
+    <label>Admin Username</label>
+    <input id="username" autocomplete="username" required>
+   </div>
+   <div class="field">
+    <label>Password</label>
+    <input id="password" type="password" autocomplete="current-password" required>
+   </div>
+   <button class="btn wide">Login</button>
+  </form>
+ </section>`;
+
+ $("#loginForm").onsubmit=async e=>{
+  e.preventDefault();
+  const button=e.submitter;
+  button.disabled=true;
+  try{
+   await api("login","POST",{
+    username:$("#username").value.trim(),
+    password:$("#password").value
+   });
+   await loadMenus();
+  }catch(error){
+   toast(error.message);
+  }finally{
+   button.disabled=false;
+  }
+ };
+}
+
+// DASHBOARD
+
+async function loadMenus(){
+ menus=await api("menus");
+
+ app.innerHTML=`
+ <header>
+  <div>
+   <h1>KRYNTOX QR MENU MAKER</h1>
+   <div class="muted">Private Owner Dashboard</div>
+  </div>
+  <button class="btn dark" data-a="logout">Logout</button>
+ </header>
+
+ <button class="btn wide" data-a="newmenu">+ Add Restaurant</button>
+
+ ${menus.length?menus.map(m=>`
+ <article class="card">
+  <strong>${esc(m.name)}</strong>
+  <div class="muted">
+   WhatsApp: +${esc(m.whatsapp)}
+   · ${Number(m.item_count)||0} menu items
+  </div>
+  <div class="row">
+   <button class="btn" data-a="items" data-id="${m.id}">Manage Menu</button>
+   <button class="btn dark" data-a="qr" data-id="${m.id}">QR Code</button>
+   <button class="btn dark" data-a="editmenu" data-id="${m.id}">Edit</button>
+   <button class="btn red" data-a="delmenu" data-id="${m.id}">Delete</button>
+  </div>
+ </article>
+ `).join(""):`
+ <div class="empty">No restaurants yet. Add your first restaurant.</div>
+ `}
+ `;
+}
+
+// RESTAURANT FORM
+
+function menuForm(m){
+ const savedNumber=onlyTenDigits(m?.whatsapp||"");
+
+ modal(`
+ <h2>${m?"Edit Restaurant":"Add Restaurant"}</h2>
+ <form id="menuForm">
+
+  <div class="field">
+   <label>Restaurant Name</label>
+   <input id="restaurantName" maxlength="80"
+    value="${esc(m?.name||"")}" required>
+  </div>
+
+  <div class="field">
+   <label>WhatsApp Number (10 digits only)</label>
+   <div style="display:flex;gap:8px;align-items:center">
+    <span style="padding:12px;border:1px solid #46556b;border-radius:9px">+91</span>
+    <input id="restaurantWhatsApp" type="tel"
+     inputmode="numeric" maxlength="10"
+     placeholder="9876543210"
+     value="${esc(savedNumber)}" required>
+   </div>
+   <div class="muted">Country code +91 will be added automatically.</div>
+  </div>
+
+  <div class="row">
+   <button class="btn">Save Restaurant</button>
+   <button type="button" class="btn dark" data-a="close">Cancel</button>
+  </div>
+ </form>
+ `);
+
+ $("#restaurantWhatsApp").addEventListener("input",e=>{
+  e.target.value=e.target.value.replace(/\D/g,"").slice(0,10);
+ });
+
+ $("#menuForm").onsubmit=async e=>{
+  e.preventDefault();
+
+  try{
+   const number=$("#restaurantWhatsApp").value.trim();
+
+   if(!/^\d{10}$/.test(number)){
+    toast("Enter a valid 10-digit WhatsApp number.");
+    return;
+   }
+
+   const data={
+    name:$("#restaurantName").value.trim(),
+    whatsapp:"91"+number
+   };
+
+   await api(m?"menus/"+m.id:"menus",m?"PUT":"POST",data);
+
+   closeModal();
+   toast("Restaurant saved successfully");
+   await loadMenus();
+
+  }catch(error){
+   toast(error.message);
+  }
+ };
+}
+
+// FOOD ITEM LIST
+
+async function openItems(id){
+ current=menus.find(m=>String(m.id)===String(id));
+ if(!current)throw new Error("Restaurant not found");
+
+ items=await api("menus/"+id+"/items");
+
+ app.innerHTML=`
+ <header>
+  <div>
+   <h1>${esc(current.name)}</h1>
+   <div class="muted">Manage Food Items</div>
+  </div>
+  <button class="btn dark" data-a="back">Back</button>
+ </header>
+
+ <button class="btn wide" data-a="newitem">+ Add Food Item</button>
+ <button class="btn wide" data-a="scanmenu">📷 Scan Menu Photo & Import Items</button>
+ <button class="btn wide" data-a="dedupe">Remove Duplicate Items</button>
+
+ ${current.name.trim().toLowerCase()==="muralidhar"?`
+ <button class="btn wide" data-a="importmuralidhar">
+ Import Verified Muralidhar Menu (23 Items)
+ </button>
+ `:""}
+
+ ${items.length?items.map(i=>`
+ <article class="card item">
+  ${i.photo?`<img src="${esc(i.photo)}" alt="">`:'<div class="placeholder"></div>'}
+  <div class="grow">
+   <strong>${esc(i.name)}</strong>
+   <div class="muted">${esc(i.category)} · ₹${Number(i.price).toLocaleString("en-IN")}</div>
+  </div>
+  <div class="row">
+   <button class="btn dark" data-a="edititem" data-id="${i.id}">Edit</button>
+   <button class="btn red" data-a="delitem" data-id="${i.id}">Delete</button>
+  </div>
+ </article>
+ `).join(""):`
+ <div class="empty">No food items yet.</div>
+ `}
+ `;
+}
+
+// ADD / EDIT FOOD
+
+function itemForm(item){
+ photoData=null;
+
+ modal(`
+ <h2>${item?"Edit Food Item":"Add Food Item"}</h2>
+ <form id="itemForm">
+
+  <div class="field">
+   <label>Food Name</label>
+   <input id="foodName" maxlength="100"
+    value="${esc(item?.name||"")}" required>
+  </div>
+
+  <div class="field">
+   <label>Category</label>
+   <input id="foodCategory" maxlength="50"
+    value="${esc(item?.category||"Other")}" required>
+  </div>
+
+  <div class="field">
+   <label>Price (₹)</label>
+   <input id="foodPrice" type="number"
+    min="0" max="10000000" step="1"
+    value="${item?.price??""}" required>
+  </div>
+
+  <div class="field">
+   <label>Food Photo (Optional)</label>
+   <input id="foodPhoto" type="file" accept="image/*">
+  </div>
+
+  <div id="photoPreview">
+   ${item?.photo?`<img src="${esc(item.photo)}" style="width:100px;height:100px;object-fit:cover">`:""}
+  </div>
+
+  ${item?.photo?`
+  <label class="muted">
+   <input type="checkbox" id="removePhoto" style="width:auto">
+   Remove current photo
+  </label>
+  `:""}
+
+  <div class="row">
+   <button class="btn">Save Item</button>
+   <button type="button" class="btn dark" data-a="close">Cancel</button>
+  </div>
+ </form>
+ `);
+
+ $("#foodPhoto").onchange=async e=>{
+  const file=e.target.files?.[0];
+  if(!file)return;
+  try{
+   photoData=await compressPhoto(file);
+   $("#photoPreview").innerHTML=`
+    <img src="${photoData}" style="width:100px;height:100px;object-fit:cover">
+   `;
+  }catch(error){
+   toast(error.message);
+  }
+ };
+
+ $("#itemForm").onsubmit=async e=>{
+  e.preventDefault();
+  try{
+   const data={
+    menu_id:current.id,
+    name:$("#foodName").value.trim(),
+    category:$("#foodCategory").value.trim(),
+    price:$("#foodPrice").value
+   };
+
+   if(photoData)data.photo=photoData;
+   if($("#removePhoto")?.checked)data.remove_photo=true;
+
+   await api(item?"items/"+item.id:"items",item?"PUT":"POST",data);
+
+   closeModal();
+   toast("Food item saved successfully");
+   await openItems(current.id);
+
+  }catch(error){
+   toast(error.message);
+  }
+ };
+}
+
+// PHOTO COMPRESSION
+
+function compressPhoto(file){
+ return new Promise((resolve,reject)=>{
+  if(!file.type.startsWith("image/")){
+   return reject(new Error("Choose an image file"));
+  }
+
+  const reader=new FileReader();
+  reader.onerror=()=>reject(new Error("Photo reading failed"));
+
+  reader.onload=()=>{
+   const img=new Image();
+   img.onerror=()=>reject(new Error("Invalid photo"));
+
+   img.onload=()=>{
+    const scale=Math.min(1,640/Math.max(img.width,img.height));
+    const canvas=document.createElement("canvas");
+    canvas.width=Math.round(img.width*scale);
+    canvas.height=Math.round(img.height*scale);
+    canvas.getContext("2d").drawImage(img,0,0,canvas.width,canvas.height);
+    resolve(canvas.toDataURL("image/jpeg",0.68));
+   };
+
+   img.src=reader.result;
+  };
+
+  reader.readAsDataURL(file);
+ });
+}
+
+// DUPLICATE CLEANUP
+
+function duplicateKey(item){
+ return [
+  String(item.name||"").trim().toLowerCase().replace(/\s+/g," "),
+  String(item.category||"").trim().toLowerCase().replace(/\s+/g," "),
+  Number(item.price)
+ ].join("|");
+}
+
+async function removeDuplicateItems(){
+ const seen=new Set();
+ const duplicates=[];
+
+ for(const item of items){
+  const key=duplicateKey(item);
+  if(seen.has(key)){
+   duplicates.push(item);
+  }else{
+   seen.add(key);
+  }
+ }
+
+ if(!duplicates.length){
+  toast("No exact duplicate items found.");
+  return;
+ }
+
+ if(!confirm(
+  `Found ${duplicates.length} exact duplicate items. Remove them?`
+ ))return;
+
+ let deleted=0;
+ let failed=0;
+
+ for(const item of duplicates){
+  try{
+   await api("items/"+item.id,"DELETE");
+   deleted++;
+  }catch(error){
+   failed++;
+  }
+ }
+
+ toast(`Removed ${deleted} duplicates. Failed: ${failed}`);
+ await openItems(current.id);
+}
+
+// UNIVERSAL MENU PHOTO SCANNER
+
+function openMenuScanner(){
+ scanRows=[];
+
+ modal(`
+ <h2>Menu Photo Scanner</h2>
+ <p class="muted">Restaurant: <strong>${esc(current.name)}</strong>. Upload a clear printed menu photo. Review every result before importing.</p>
+
+ <div class="field">
+  <label>Menu Photo</label>
+  <input id="menuScanPhoto" type="file" accept="image/*">
+ </div>
+
+ <button class="btn wide" data-a="startscan">Scan Menu Photo</button>
+ <div id="scanStatus" class="muted">English printed text works best. Review OCR results carefully.</div>
+ <div class="progress"><div id="scanProgress"></div></div>
+ <div id="scanPreview"></div>
+ <button class="btn dark" data-a="close">Close</button>
+ `);
+}
+
 function parseMenuWords(words){
- const usable=(words||[]).filter(w=>w.text&&w.bbox&&Number(w.confidence||0)>=20);
+ const usable=(words||[]).filter(w=>
+  w.text&&w.bbox&&Number(w.confidence||0)>=20
+ );
+
  const rows=[];
+
  for(const w of usable){
   const y=(w.bbox.y0+w.bbox.y1)/2;
   let row=rows.find(r=>Math.abs(r.y-y)<18);
   if(!row){row={y,words:[]};rows.push(row)}
   row.words.push(w);
  }
+
  rows.sort((a,b)=>a.y-b.y);
+
  let category="Other";
  const headings={
-  burgers:/^BURGERS?$/i,
-  pizza:/^PIZZAS?$/i,
-  sandwiches:/^SANDWICH(?:ES)?$/i,
-  fries:/^FRIES$/i,
-  drinks:/^(DRINKS?|BEVERAGES?)$/i,
-  starters:/^STARTERS?$/i,
-  desserts:/^DESSERTS?$/i
+  Burgers:/^BURGERS?$/i,
+  Pizza:/^PIZZAS?$/i,
+  Sandwiches:/^SANDWICH(?:ES)?$/i,
+  Fries:/^FRIES$/i,
+  Drinks:/^(DRINKS?|BEVERAGES?)$/i,
+  Starters:/^STARTERS?$/i,
+  Desserts:/^DESSERTS?$/i
  };
+
  const found=[];
+
  for(const row of rows){
   row.words.sort((a,b)=>a.bbox.x0-b.bbox.x0);
-  const tokens=row.words.map(w=>w.text.trim()).filter(Boolean);
-  const raw=tokens.join(" ").replace(/\s+/g," ").trim();
-  const heading=Object.entries(headings).find(([k,re])=>re.test(raw.replace(/[^A-Za-z]/g,"")));
-  if(heading){category=heading[0][0].toUpperCase()+heading[0].slice(1);continue}
-  // Price is expected at the far right of the printed text column.
+  const raw=row.words.map(w=>w.text.trim()).filter(Boolean).join(" ").replace(/\s+/g," ").trim();
+
+  const heading=Object.entries(headings).find(([name,re])=>
+   re.test(raw.replace(/[^A-Za-z]/g,""))
+  );
+
+  if(heading){
+   category=heading[0];
+   continue;
+  }
+
   const priceIndexes=[];
   row.words.forEach((w,i)=>{
    const t=w.text.replace(/[₹Rs.,]/gi,"");
    if(/^\d{1,4}(?:\.\d{1,2})?$/.test(t))priceIndexes.push(i);
   });
+
   if(!priceIndexes.length)continue;
+
   const pi=priceIndexes[priceIndexes.length-1];
-  const priceWord=row.words[pi];
-  const price=Number(priceWord.text.replace(/[^\d.]/g,""));
+  const price=Number(row.words[pi].text.replace(/[^\d.]/g,""));
+
   if(!Number.isFinite(price)||price<1||price>100000)continue;
-  const nameWords=row.words.slice(0,pi).filter(w=>{
-   const x=(w.text||"").trim();
-   return !/^[₹|.,:;]+$/.test(x);
-  });
-  const name=nameWords.map(w=>w.text).join(" ").replace(/[.·•|]+/g," ").replace(/\s+/g," ").trim();
+
+  const name=row.words.slice(0,pi)
+   .map(w=>w.text)
+   .join(" ")
+   .replace(/[.·•|]+/g," ")
+   .replace(/\s+/g," ")
+   .trim();
+
   if(name.length<3||name.length>100)continue;
   if(/^(FOOD MENU|GOOD FOOD|GOOD MOOD|MENU)$/i.test(name))continue;
+
   found.push({name,category,price:String(price)});
  }
+
  const seen=new Set();
- return found.filter(x=>{const k=(x.category+"|"+x.name+"|"+x.price).toLowerCase();if(seen.has(k))return false;seen.add(k);return true});
+
+ return found.filter(x=>{
+  const k=duplicateKey(x);
+  if(seen.has(k))return false;
+  seen.add(k);
+  return true;
+ });
 }
 
 function prepareMenuImage(file){
  return new Promise((resolve,reject)=>{
-  const url=URL.createObjectURL(file),img=new Image();
-  img.onerror=()=>{URL.revokeObjectURL(url);reject(new Error("Could not read menu image"))};
+  const url=URL.createObjectURL(file);
+  const img=new Image();
+
+  img.onerror=()=>{
+   URL.revokeObjectURL(url);
+   reject(new Error("Could not read menu image"));
+  };
+
   img.onload=()=>{
-   // Keep the left text-and-price column; discard the food photography on the right.
    const cropWidth=Math.floor(img.width*0.57);
    const scale=Math.min(3,Math.max(1.5,1800/cropWidth));
    const canvas=document.createElement("canvas");
+
    canvas.width=Math.round(cropWidth*scale);
    canvas.height=Math.round(img.height*scale);
+
    const ctx=canvas.getContext("2d",{willReadFrequently:true});
    ctx.drawImage(img,0,0,cropWidth,img.height,0,0,canvas.width,canvas.height);
+
    const data=ctx.getImageData(0,0,canvas.width,canvas.height);
+
    for(let i=0;i<data.data.length;i+=4){
     const gray=0.299*data.data[i]+0.587*data.data[i+1]+0.114*data.data[i+2];
     const v=gray>170?255:gray<105?0:Math.round((gray-105)*255/65);
     data.data[i]=data.data[i+1]=data.data[i+2]=v;
    }
+
    ctx.putImageData(data,0,0);
    URL.revokeObjectURL(url);
    resolve(canvas);
   };
+
   img.src=url;
  });
 }
-async function startMenuScan(){const file=$("#menuScanPhoto")?.files?.[0];if(!file){toast("Choose a menu photo first");return}if(typeof Tesseract==="undefined"){toast("OCR library failed to load. Check internet and CSP settings.");return}const button=document.querySelector('[data-a="startscan"]'),status=$("#scanStatus"),bar=$("#scanProgress");button.disabled=true;status.textContent="Starting OCR...";let worker;try{worker=await Tesseract.createWorker("eng",1,{
- workerPath:"https://cdn.jsdelivr.net/npm/tesseract.js@5.0.0/dist/worker.min.js",
- corePath:"https://cdn.jsdelivr.net/npm/tesseract.js-core@v5.0.0",
- langPath:"https://tessdata.projectnaptha.com/4.0.0",
- logger:m=>{
-  if(m.status)status.textContent=m.status;
-  if(typeof m.progress==="number")bar.style.width=Math.round(m.progress*100)+"%";
- }
-});const processed=await prepareMenuImage(file);const result=await worker.recognize(processed,{rotateAuto:true});scanRows=parseMenuWords(result.data.words);status.textContent=`Scan complete: ${scanRows.length} possible items found. Check every name and price before importing.`;renderScanPreview()}catch(err){status.textContent="Scan failed: "+err.message;toast("Scanning failed")}finally{if(worker)await worker.terminate();button.disabled=false}}
-function renderScanPreview(){const host=$("#scanPreview");if(!scanRows.length){host.innerHTML='<p class="muted">No items detected. Try a sharper photo with visible prices.</p>';return}host.innerHTML=`<h3>Review ${scanRows.length} items</h3><p class="muted">Edit incorrect names, categories or prices before importing.</p>`+scanRows.map((r,i)=>`<div class="scan-row" data-scan-row="${i}"><div class="field"><label>Food Name</label><input data-field="name" value="${esc(r.name)}"></div><div class="field"><label>Category</label><input data-field="category" value="${esc(r.category)}"></div><div class="field"><label>Price (₹)</label><input data-field="price" type="number" min="0" step="0.01" value="${esc(r.price)}"></div><button class="btn red" data-a="removescan" data-index="${i}">Remove</button></div>`).join("")+`<button class="btn wide" data-a="importscan">Import ${scanRows.length} Items to ${esc(current.name)}</button>`;host.querySelectorAll("[data-scan-row]").forEach(el=>{const i=Number(el.dataset.scanRow);el.querySelectorAll("[data-field]").forEach(input=>input.addEventListener("input",()=>scanRows[i][input.dataset.field]=input.value))})}
-async function importScannedItems(){const valid=scanRows.filter(r=>r.name.trim()&&r.category.trim()&&r.price!==""&&Number.isFinite(Number(r.price))&&Number(r.price)>=0);if(!valid.length){toast("No valid items to import");return}if(!confirm(`Import ${valid.length} items into ${current.name}?`))return;const button=document.querySelector('[data-a="importscan"]');if(button)button.disabled=true;let success=0,failed=0;for(const r of valid){try{await api("items","POST",{menu_id:current.id,name:r.name.trim(),category:r.category.trim(),price:String(Number(r.price))});success++}catch(e){failed++}}closeModal();toast(`Imported ${success}; failed ${failed}`);await openItems(current.id)}
 
-// Verified menu import for the supplied Muralidhar menu photo.
-// This is a reviewed transcription, not OCR output.
+async function startMenuScan(){
+ const file=$("#menuScanPhoto")?.files?.[0];
+
+ if(!file){
+  toast("Choose a menu photo first");
+  return;
+ }
+
+ if(typeof Tesseract==="undefined"){
+  toast("OCR library failed to load. Check internet and CSP settings.");
+  return;
+ }
+
+ const button=document.querySelector('[data-a="startscan"]');
+ const status=$("#scanStatus");
+ const bar=$("#scanProgress");
+
+ button.disabled=true;
+ status.textContent="Starting OCR...";
+
+ let worker;
+
+ try{
+  worker=await Tesseract.createWorker("eng",1,{
+   workerPath:"https://cdn.jsdelivr.net/npm/tesseract.js@5.0.0/dist/worker.min.js",
+   corePath:"https://cdn.jsdelivr.net/npm/tesseract.js-core@v5.0.0",
+   langPath:"https://tessdata.projectnaptha.com/4.0.0",
+   logger:m=>{
+    if(m.status)status.textContent=m.status;
+    if(typeof m.progress==="number"){
+     bar.style.width=Math.round(m.progress*100)+"%";
+    }
+   }
+  });
+
+  const processed=await prepareMenuImage(file);
+  const result=await worker.recognize(processed,{rotateAuto:true});
+
+  scanRows=parseMenuWords(result.data.words);
+
+  status.textContent=
+   `Scan complete: ${scanRows.length} possible items found. Check every name and price before importing.`;
+
+  renderScanPreview();
+
+ }catch(err){
+  status.textContent="Scan failed: "+err.message;
+  toast("Scanning failed");
+ }finally{
+  if(worker)await worker.terminate();
+  button.disabled=false;
+ }
+}
+
+function renderScanPreview(){
+ const host=$("#scanPreview");
+
+ if(!scanRows.length){
+  host.innerHTML='<p class="muted">No items detected. Try a sharper photo with visible prices.</p>';
+  return;
+ }
+
+ host.innerHTML=`
+ <h3>Review ${scanRows.length} items</h3>
+ <p class="muted">Edit incorrect names, categories or prices before importing.</p>
+ `+scanRows.map((r,i)=>`
+ <div class="scan-row" data-scan-row="${i}">
+  <div class="field">
+   <label>Food Name</label>
+   <input data-field="name" value="${esc(r.name)}">
+  </div>
+  <div class="field">
+   <label>Category</label>
+   <input data-field="category" value="${esc(r.category)}">
+  </div>
+  <div class="field">
+   <label>Price (₹)</label>
+   <input data-field="price" type="number" min="0" step="0.01" value="${esc(r.price)}">
+  </div>
+  <button class="btn red" data-a="removescan" data-index="${i}">Remove</button>
+ </div>
+ `).join("")+`
+ <button class="btn wide" data-a="importscan">Import ${scanRows.length} Items</button>
+ `;
+
+ host.querySelectorAll("[data-scan-row]").forEach(el=>{
+  const i=Number(el.dataset.scanRow);
+  el.querySelectorAll("[data-field]").forEach(input=>{
+   input.addEventListener("input",()=>{
+    scanRows[i][input.dataset.field]=input.value;
+   });
+  });
+ });
+}
+
+async function importScannedItems(){
+ const valid=scanRows.filter(r=>
+  r.name.trim()&&r.category.trim()&&
+  r.price!==""&&Number.isFinite(Number(r.price))&&Number(r.price)>=0
+ );
+
+ if(!valid.length){
+  toast("No valid items to import");
+  return;
+ }
+
+ if(!confirm(`Import ${valid.length} items into ${current.name}?`))return;
+
+ const button=document.querySelector('[data-a="importscan"]');
+ if(button)button.disabled=true;
+
+ // Prevent importing exact duplicates already in the restaurant.
+ const existing=new Set(items.map(duplicateKey));
+ const pending=[];
+ const batchSeen=new Set();
+
+ for(const r of valid){
+  const key=duplicateKey(r);
+  if(existing.has(key)||batchSeen.has(key))continue;
+  batchSeen.add(key);
+  pending.push(r);
+ }
+
+ if(!pending.length){
+  toast("All scanned items already exist.");
+  return;
+ }
+
+ let success=0;
+ let failed=0;
+
+ for(const r of pending){
+  try{
+   await api("items","POST",{
+    menu_id:current.id,
+    name:r.name.trim(),
+    category:r.category.trim(),
+    price:String(Number(r.price))
+   });
+   success++;
+  }catch(error){
+   failed++;
+  }
+ }
+
+ closeModal();
+ toast(`Imported ${success}; failed ${failed}`);
+ await openItems(current.id);
+}
+
+// VERIFIED MURALIDHAR MENU
+
 async function importMuralidharMenu(){
  const catalog=[
   ["Burgers","Classic Veg Burger",69],
@@ -172,48 +789,246 @@ async function importMuralidharMenu(){
   ["Drinks","Mango Shake",79],
   ["Drinks","Lemon Iced Tea",59]
  ];
- const existing=new Set(items.map(x=>(x.name||"").trim().toLowerCase()));
- const pending=catalog.filter(x=>!existing.has(x[1].toLowerCase()));
- if(!pending.length){toast("These 23 menu items already appear to be added.");return}
- if(!confirm(`Add ${pending.length} verified Muralidhar menu items to ${current.name}?`))return;
- let added=0,failed=0;
+
+ const existing=new Set(items.map(duplicateKey));
+ const pending=catalog.filter(([category,name,price])=>
+  !existing.has(duplicateKey({category,name,price}))
+ );
+
+ if(!pending.length){
+  toast("All 23 verified menu items already exist.");
+  return;
+ }
+
+ if(!confirm(`Add ${pending.length} verified menu items to ${current.name}?`))return;
+
+ let added=0;
+ let failed=0;
+
  for(const [category,name,price] of pending){
   try{
-   await api("items","POST",{menu_id:current.id,category,name,price:String(price)});
+   await api("items","POST",{
+    menu_id:current.id,
+    category,
+    name,
+    price:String(price)
+   });
    added++;
-  }catch(error){failed++}
+  }catch(error){
+   failed++;
+  }
  }
+
  toast(`Added ${added} items. Failed: ${failed}.`);
  await openItems(current.id);
 }
 
-// QR generator
-async function showQR(m){if(!m)return;const menuURL=location.origin+"/menu/?r="+encodeURIComponent(m.slug);qrName=(m.slug||"restaurant")+"-QR.png";qrData=null;modal(`<h2>${esc(m.name)} — QR Code</h2><div class="qrbox" id="qrBox">Generating QR...</div><div class="url">${esc(menuURL)}</div><div class="row"><button class="btn" data-a="downloadqr">Download PNG</button><button class="btn dark" data-a="printqr">Print QR</button><button class="btn dark" data-a="close">Close</button></div>`);if(typeof QRCode==="undefined"){$("#qrBox").textContent="QR library failed to load.";return}const temp=document.createElement("div");new QRCode(temp,{text:menuURL,width:420,height:420,colorDark:"#000",colorLight:"#fff",correctLevel:QRCode.CorrectLevel.H});await new Promise(r=>setTimeout(r,150));const qr=temp.querySelector("canvas")||temp.querySelector("img");if(!qr){$("#qrBox").textContent="QR generation failed.";return}const canvas=document.createElement("canvas");canvas.width=560;canvas.height=680;const ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,560,680);ctx.fillStyle="#111";ctx.textAlign="center";ctx.font="bold 28px Arial";ctx.fillText(m.name.slice(0,28),280,55);ctx.drawImage(qr,70,90,420,420);ctx.font="bold 24px Arial";ctx.fillText("SCAN TO VIEW MENU",280,560);ctx.font="16px Arial";ctx.fillStyle="#555";ctx.fillText("Order directly on WhatsApp",280,600);qrData=canvas.toDataURL("image/png");$("#qrBox").innerHTML=`<img src="${qrData}" alt="Restaurant QR Code">`}
-function downloadQR(){if(!qrData)return toast("QR is not ready");const a=document.createElement("a");a.href=qrData;a.download=qrName;document.body.appendChild(a);a.click();a.remove()}
-function printQR(){if(!qrData)return toast("QR is not ready");const w=window.open("","_blank");if(!w)return toast("Allow popups to print QR");w.document.write(`<!doctype html><title>Restaurant QR</title><body style="text-align:center;font-family:Arial"><img src="${qrData}" style="width:100%;max-width:560px" onload="window.print()"></body>`);w.document.close()}
+// QR CODE
 
-// Button actions
-document.addEventListener("click",async e=>{const b=e.target.closest("[data-a]");if(!b)return;const a=b.dataset.a,id=b.dataset.id;try{switch(a){
-case "logout":await api("logout","POST",{});showLogin();break;
-case "newmenu":menuForm();break;
-case "editmenu":menuForm(menus.find(x=>String(x.id)===String(id)));break;
-case "delmenu":if(confirm("Delete this restaurant and its food items?")){await api("menus/"+id,"DELETE");toast("Restaurant deleted");await loadMenus()}break;
-case "items":await openItems(id);break;
-case "back":await loadMenus();break;
-case "newitem":itemForm();break;
-case "edititem":itemForm(items.find(x=>String(x.id)===String(id)));break;
-case "delitem":if(confirm("Delete this food item?")){await api("items/"+id,"DELETE");await openItems(current.id);toast("Food item deleted")}break;
-case "qr":await showQR(menus.find(x=>String(x.id)===String(id)));break;
-case "downloadqr":downloadQR();break;
-case "printqr":printQR();break;
-case "scanmenu":openMenuScanner();break;
-case "importmuralidhar":await importMuralidharMenu();break;
-case "startscan":await startMenuScan();break;
-case "importscan":await importScannedItems();break;
-case "removescan":scanRows.splice(Number(b.dataset.index),1);renderScanPreview();break;
-case "close":closeModal();break;
-}}catch(error){toast(error.message)}});
-api("me").then(result=>{if(result.loggedIn)return loadMenus();showLogin()}).catch(showLogin);
+async function showQR(m){
+ if(!m)return;
+
+ const menuURL=location.origin+"/menu/?r="+encodeURIComponent(m.slug);
+ qrName=(m.slug||"restaurant")+"-QR.png";
+ qrData=null;
+
+ modal(`
+ <h2>${esc(m.name)} — QR Code</h2>
+ <div class="qrbox" id="qrBox">Generating QR...</div>
+ <div class="url">${esc(menuURL)}</div>
+ <div class="row">
+  <button class="btn" data-a="downloadqr">Download PNG</button>
+  <button class="btn dark" data-a="printqr">Print QR</button>
+  <button class="btn dark" data-a="close">Close</button>
+ </div>
+ `);
+
+ if(typeof QRCode==="undefined"){
+  $("#qrBox").textContent="QR library failed to load.";
+  return;
+ }
+
+ const temp=document.createElement("div");
+
+ new QRCode(temp,{
+  text:menuURL,
+  width:420,
+  height:420,
+  colorDark:"#000",
+  colorLight:"#fff",
+  correctLevel:QRCode.CorrectLevel.H
+ });
+
+ await new Promise(r=>setTimeout(r,150));
+
+ const qr=temp.querySelector("canvas")||temp.querySelector("img");
+
+ if(!qr){
+  $("#qrBox").textContent="QR generation failed.";
+  return;
+ }
+
+ const canvas=document.createElement("canvas");
+ canvas.width=560;
+ canvas.height=680;
+
+ const ctx=canvas.getContext("2d");
+ ctx.fillStyle="#fff";
+ ctx.fillRect(0,0,560,680);
+
+ ctx.fillStyle="#111";
+ ctx.textAlign="center";
+ ctx.font="bold 28px Arial";
+ ctx.fillText(m.name.slice(0,28),280,55);
+ ctx.drawImage(qr,70,90,420,420);
+
+ ctx.font="bold 24px Arial";
+ ctx.fillText("SCAN TO VIEW MENU",280,560);
+ ctx.font="16px Arial";
+ ctx.fillStyle="#555";
+ ctx.fillText("Order directly on WhatsApp",280,600);
+
+ qrData=canvas.toDataURL("image/png");
+ $("#qrBox").innerHTML=`<img src="${qrData}" alt="Restaurant QR Code">`;
+}
+
+function downloadQR(){
+ if(!qrData)return toast("QR is not ready");
+ const a=document.createElement("a");
+ a.href=qrData;
+ a.download=qrName;
+ document.body.appendChild(a);
+ a.click();
+ a.remove();
+}
+
+function printQR(){
+ if(!qrData)return toast("QR is not ready");
+ const w=window.open("","_blank");
+ if(!w)return toast("Allow popups to print QR");
+
+ w.document.write(`
+ <!doctype html>
+ <title>Restaurant QR</title>
+ <body style="text-align:center;font-family:Arial">
+ <img src="${qrData}" style="width:100%;max-width:560px" onload="window.print()">
+ </body>
+ `);
+ w.document.close();
+}
+
+// BUTTON ACTIONS
+
+document.addEventListener("click",async e=>{
+ const b=e.target.closest("[data-a]");
+ if(!b)return;
+
+ const a=b.dataset.a;
+ const id=b.dataset.id;
+
+ try{
+  switch(a){
+
+   case "logout":
+    await api("logout","POST",{});
+    showLogin();
+    break;
+
+   case "newmenu":
+    menuForm();
+    break;
+
+   case "editmenu":
+    menuForm(menus.find(x=>String(x.id)===String(id)));
+    break;
+
+   case "delmenu":
+    if(confirm("Delete this restaurant and its food items?")){
+     await api("menus/"+id,"DELETE");
+     toast("Restaurant deleted");
+     await loadMenus();
+    }
+    break;
+
+   case "items":
+    await openItems(id);
+    break;
+
+   case "back":
+    await loadMenus();
+    break;
+
+   case "newitem":
+    itemForm();
+    break;
+
+   case "edititem":
+    itemForm(items.find(x=>String(x.id)===String(id)));
+    break;
+
+   case "delitem":
+    if(confirm("Delete this food item?")){
+     await api("items/"+id,"DELETE");
+     await openItems(current.id);
+     toast("Food item deleted");
+    }
+    break;
+
+   case "dedupe":
+    await removeDuplicateItems();
+    break;
+
+   case "qr":
+    await showQR(menus.find(x=>String(x.id)===String(id)));
+    break;
+
+   case "downloadqr":
+    downloadQR();
+    break;
+
+   case "printqr":
+    printQR();
+    break;
+
+   case "scanmenu":
+    openMenuScanner();
+    break;
+
+   case "importmuralidhar":
+    await importMuralidharMenu();
+    break;
+
+   case "startscan":
+    await startMenuScan();
+    break;
+
+   case "importscan":
+    await importScannedItems();
+    break;
+
+   case "removescan":
+    scanRows.splice(Number(b.dataset.index),1);
+    renderScanPreview();
+    break;
+
+   case "close":
+    closeModal();
+    break;
+  }
+ }catch(error){
+  toast(error.message);
+ }
+});
+
+// INITIAL CHECK
+
+api("me")
+ .then(result=>{
+  if(result.loggedIn)return loadMenus();
+  showLogin();
+ })
+ .catch(showLogin);
+
 </script>
 </body>
 </html>
