@@ -5,372 +5,98 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#a7192d">
 <title>Digital Food Menu</title>
-
 <style>
-*{box-sizing:border-box}
-body{
- margin:0;background:#fff9f2;color:#292321;
- font:15px Arial,sans-serif;padding-bottom:110px
-}
-header{
- background:#a7192d;color:white;padding:24px 18px;
- border-radius:0 0 20px 20px
-}
-header h1{margin:0;font-size:25px}
-header p{margin:7px 0 0;color:#ffe6a0}
-main{max-width:600px;margin:auto;padding:16px}
-.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px}
-.tabs button{
- white-space:nowrap;border:1px solid #a7192d;
- background:white;color:#a7192d;padding:10px 14px;
- border-radius:22px;font-weight:bold
-}
-.tabs button.active{background:#a7192d;color:white}
-h2{color:#a7192d;margin:12px 0}
-.item{
- display:flex;align-items:center;justify-content:space-between;
- gap:10px;padding:13px 0;border-bottom:1px solid #eadfd7
-}
-.item-info{display:flex;align-items:center;gap:10px;min-width:0}
-.food-photo{
- width:58px;height:58px;object-fit:cover;border-radius:9px;
- flex:none
-}
-.name{font-weight:600}
-.price{color:#8b5c45;margin-top:5px}
-.controls{display:flex;align-items:center;gap:9px;flex:none}
-.controls button{
- width:32px;height:32px;border-radius:50%;
- border:1px solid #a7192d;background:white;
- color:#a7192d;font-size:20px
-}
-.controls button.plus{background:#a7192d;color:white}
-.qty{min-width:15px;text-align:center;font-weight:bold}
-.bottom{
- position:fixed;bottom:0;left:0;right:0;background:white;
- padding:13px 16px;box-shadow:0 -3px 15px #0002;z-index:4
-}
-.summary{
- max-width:570px;margin:auto;display:flex;
- justify-content:space-between;align-items:center;gap:10px
-}
-.total{font-size:21px;font-weight:bold;color:#a7192d}
-.order{
- width:100%;max-width:570px;display:block;margin:10px auto 0;
- background:#a7192d;color:white;border:0;border-radius:12px;
- padding:13px;font-size:15px;font-weight:bold
-}
-.whatsapp{background:#168b49}
-.modal{
- position:fixed;inset:0;background:#0008;display:none;
- align-items:flex-end;z-index:5
-}
-.modal.show{display:flex}
-.sheet{
- background:white;width:100%;max-width:600px;margin:auto;
- padding:22px;border-radius:20px 20px 0 0;
- max-height:85vh;overflow:auto
-}
-.sheet h2{margin-top:0}
-.line{
- display:flex;justify-content:space-between;
- gap:12px;padding:8px 0
-}
-.note{text-align:center;font-size:12px;color:#777}
+*{box-sizing:border-box} :root{--red:#a7192d;--cream:#fff9f2;--ink:#292321}
+body{margin:0;background:var(--cream);color:var(--ink);font:15px Arial,sans-serif;padding-bottom:125px}
+header{background:linear-gradient(135deg,#8e1024,#c12b40);color:white;padding:23px 18px 21px;border-radius:0 0 22px 22px;box-shadow:0 5px 18px #6d10221f}
+header h1{margin:0;font-size:25px}header p{margin:7px 0 0;color:#ffe6a0;font-size:12px;letter-spacing:1.4px}
+main{max-width:650px;margin:auto;padding:15px 16px 20px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 14px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.tabs button{white-space:nowrap;border:1px solid var(--red);background:#fff;color:var(--red);padding:9px 14px;border-radius:22px;font-weight:bold;font-size:13px}
+.tabs button.active{background:var(--red);color:white;box-shadow:0 3px 10px #a7192d33}
+.category-hero{position:relative;height:190px;border-radius:18px;overflow:hidden;margin:2px 0 16px;background:#3b2520;box-shadow:0 7px 18px #48231620}
+.category-hero img{width:100%;height:100%;object-fit:cover;display:block}.category-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#170b0bd9 0%,#170b0b55 60%,transparent 100%)}
+.hero-copy{position:absolute;z-index:1;left:18px;bottom:17px;color:white;text-shadow:0 2px 8px #0008}.hero-copy span{display:block;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:#ffe2a1;font-weight:bold;margin-bottom:5px}.hero-copy h2{font-size:26px;margin:0;color:white}
+.section-label{font-size:12px;color:#8b7468;font-weight:bold;letter-spacing:1.2px;text-transform:uppercase;margin:0 2px 5px}
+.item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 2px;border-bottom:1px solid #eadfd7}
+.item-info{display:flex;align-items:center;gap:10px;min-width:0}.food-photo{width:58px;height:58px;object-fit:cover;border-radius:10px;flex:none}
+.name{font-weight:600;line-height:1.3}.price{color:#8b5c45;margin-top:5px;font-size:14px}
+.controls{display:flex;align-items:center;gap:9px;flex:none}.controls button{width:32px;height:32px;border-radius:50%;border:1px solid var(--red);background:white;color:var(--red);font-size:20px;line-height:1}.controls button.plus{background:var(--red);color:white}.qty{min-width:15px;text-align:center;font-weight:bold}
 .status{text-align:center;padding:35px 10px;color:#777}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;padding:12px 16px max(13px,env(safe-area-inset-bottom));box-shadow:0 -3px 18px #0002;z-index:4}
+.summary{max-width:570px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:10px}.total{font-size:21px;font-weight:bold;color:var(--red);margin-top:3px}
+.order{width:100%;max-width:570px;display:block;margin:10px auto 0;background:var(--red);color:white;border:0;border-radius:12px;padding:13px;font-size:15px;font-weight:bold}.whatsapp{background:#168b49}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:flex-end;z-index:5}.modal.show{display:flex}
+.sheet{background:white;width:100%;max-width:600px;margin:auto;padding:22px;border-radius:20px 20px 0 0;max-height:85vh;overflow:auto}.sheet h2{margin:0 0 14px;color:var(--red)}
+.line{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #f0e8e2}.note{text-align:center;font-size:12px;color:#777}
+@media(min-width:600px){.category-hero{height:230px}.item{padding:15px 4px}.sheet{border-radius:20px}}
+@media(max-width:380px){.category-hero{height:165px}.controls{gap:6px}.controls button{width:30px;height:30px}.food-photo{width:52px;height:52px}}
 </style>
 </head>
-
 <body>
-
-<header>
- <h1 id="restaurantName">DIGITAL FOOD MENU</h1>
- <p>SCAN • SELECT • ENJOY</p>
-</header>
-
-<main>
- <div class="tabs" id="tabs"></div>
- <h2 id="heading">Menu</h2>
- <div id="items" class="status">Loading menu...</div>
-</main>
-
-<div class="bottom">
- <div class="summary">
-  <div>
-   <div><b>Selected Items:</b> <span id="count">0</span></div>
-   <div class="total" id="total">₹0</div>
-  </div>
-  <button class="order" style="width:auto;margin:0"
-   onclick="showOrder()">View Order</button>
- </div>
-</div>
-
-<div class="modal" id="modal"
- onclick="if(event.target===this)closeOrder()">
- <div class="sheet">
-  <h2>Your Order</h2>
-  <div id="orderList"></div>
-  <hr>
-  <div class="line">
-   <b>Total Amount</b><b id="finalTotal">₹0</b>
-  </div>
-  <button class="order whatsapp" onclick="sendWhatsApp()">
-   Send Order on WhatsApp
-  </button>
-  <p class="note">WhatsApp will open with your order details.</p>
-  <button class="order" onclick="closeOrder()">Continue Menu</button>
- </div>
-</div>
-
+<header><h1 id="restaurantName">DIGITAL FOOD MENU</h1><p>SCAN • SELECT • ENJOY</p></header>
+<main><div class="tabs" id="tabs"></div><div id="categoryHero"></div><div class="section-label">Freshly prepared favourites</div><div id="items" class="status">Loading menu...</div></main>
+<div class="bottom"><div class="summary"><div><div><b>Selected Items:</b> <span id="count">0</span></div><div class="total" id="total">₹0</div></div><button class="order" style="width:auto;margin:0" onclick="showOrder()">View Order</button></div></div>
+<div class="modal" id="modal" onclick="if(event.target===this)closeOrder()"><div class="sheet"><h2>Your Order</h2><div id="orderList"></div><hr><div class="line"><b>Total Amount</b><b id="finalTotal">₹0</b></div><button class="order whatsapp" onclick="sendWhatsApp()">Send Order on WhatsApp</button><p class="note">WhatsApp will open with your order details.</p><button class="order" onclick="closeOrder()">Continue Menu</button></div></div>
 <script>
 "use strict";
-
-const $ = id => document.getElementById(id);
-
-let restaurant = null;
-let menuItems = [];
-let selected = {};
-let currentCategory = "";
-
-const slug = new URLSearchParams(location.search).get("r");
-
-function money(value){
- return "₹" + Number(value).toLocaleString("en-IN");
-}
-
-function esc(value){
- return String(value ?? "").replace(/[&<>"']/g,c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",
-  '"':"&quot;","'":"&#39;"
- }[c]));
-}
-
-// LOAD RESTAURANT MENU FROM DATABASE
-
+const $=id=>document.getElementById(id);
+let restaurant=null,menuItems=[],selected={},currentCategory="";
+const slug=new URLSearchParams(location.search).get("r");
+const visuals=[
+ {re:/burger/i,title:"Burgers",tag:"Juicy • Fresh • Delicious",image:"https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=1200&q=85"},
+ {re:/pizza/i,title:"Pizza",tag:"Hot from the oven",image:"https://images.unsplash.com/photo-1513104890138-7c749659a591?auto=format&fit=crop&w=1200&q=85"},
+ {re:/sandwich/i,title:"Sandwiches",tag:"Grilled • Toasted • Tasty",image:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=1200&q=85"},
+ {re:/fries/i,title:"Fries",tag:"Crispy in every bite",image:"https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=1200&q=85"},
+ {re:/drink|beverage/i,title:"Drinks",tag:"Cool • Creamy • Refreshing",image:"https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=1200&q=85"}
+];
+const fallback="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=1200&q=85";
+function money(v){return "₹"+Number(v).toLocaleString("en-IN")}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function visualFor(c){return visuals.find(v=>v.re.test(c||""))||{title:c||"Our Menu",tag:"Made fresh for you",image:fallback}}
 async function loadMenu(){
-
- if(!slug){
-  throw new Error("Restaurant QR link is missing.");
- }
-
- const url="/api/menu/"+encodeURIComponent(slug);
-
- const res=await fetch(url,{
-  method:"GET",
-  cache:"no-store",
-  headers:{"Accept":"application/json"}
- });
-
+ if(!slug)throw new Error("Restaurant QR link is missing.");
+ const res=await fetch("/api/menu/"+encodeURIComponent(slug),{cache:"no-store",headers:{"Accept":"application/json"}});
  const data=await res.json().catch(()=>({}));
-
- if(!res.ok){
-  throw new Error(data.error || "Menu loading failed.");
- }
-
- if(!data.restaurant){
-  throw new Error("Restaurant not found.");
- }
-
- restaurant=data.restaurant;
- menuItems=Array.isArray(data.items)?data.items:[];
-
- $("restaurantName").textContent=restaurant.name;
-
- document.title=restaurant.name+" - Food Menu";
-
+ if(!res.ok)throw new Error(data.error||"Menu loading failed.");
+ if(!data.restaurant)throw new Error("Restaurant not found.");
+ restaurant=data.restaurant;menuItems=Array.isArray(data.items)?data.items:[];
+ $("restaurantName").textContent=restaurant.name;document.title=restaurant.name+" - Food Menu";
  renderTabs();
-
- if(menuItems.length){
-  renderItems();
- }else{
-  $("items").innerHTML=
-   '<div class="status">Menu items are not available yet.</div>';
-  $("heading").textContent="Menu";
- }
-
+ if(menuItems.length)renderItems();else $("items").innerHTML='<div class="status">Menu items are not available yet.</div>';
  updateTotal();
 }
-
-// CATEGORY TABS
-
-function getCategories(){
- return [...new Set(menuItems.map(i=>i.category).filter(Boolean))];
-}
-
+function categories(){return [...new Set(menuItems.map(i=>i.category).filter(Boolean))]}
 function renderTabs(){
-
- const categories=getCategories();
-
- if(!categories.includes(currentCategory)){
-  currentCategory=categories[0] || "";
- }
-
- $("tabs").innerHTML=categories.map(c=>`
-  <button
-   class="${c===currentCategory?'active':''}"
-   data-category="${esc(c)}">
-   ${esc(c)}
-  </button>
- `).join("");
-
- $("tabs").querySelectorAll("button").forEach(button=>{
-  button.addEventListener("click",()=>{
-   currentCategory=button.dataset.category;
-   renderTabs();
-   renderItems();
-  });
- });
+ const list=categories();if(!list.includes(currentCategory))currentCategory=list[0]||"";
+ $("tabs").innerHTML=list.map(c=>`<button class="${c===currentCategory?"active":""}" data-category="${esc(c)}">${esc(c)}</button>`).join("");
+ $("tabs").querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{currentCategory=b.dataset.category;renderTabs();renderItems()}));
 }
-
-// FOOD ITEMS
-
+function renderHero(){
+ const v=visualFor(currentCategory);
+ $("categoryHero").innerHTML=`<section class="category-hero"><img src="${v.image}" alt="${esc(v.title)} food" loading="lazy" onerror="this.onerror=null;this.src='${fallback}'"><div class="hero-copy"><span>${esc(v.tag)}</span><h2>${esc(v.title)}</h2></div></section>`;
+}
 function renderItems(){
-
- $("heading").textContent=currentCategory;
-
- const filtered=menuItems.filter(
-  i=>i.category===currentCategory
- );
-
- if(!filtered.length){
-  $("items").innerHTML=
-   '<div class="status">No food items in this category.</div>';
-  return;
- }
-
- $("items").innerHTML=filtered.map(item=>`
-  <div class="item">
-   <div class="item-info">
-    ${item.photo?`
-     <img class="food-photo" src="${esc(item.photo)}"
-      alt="${esc(item.name)}">
-    `:""}
-    <div>
-     <div class="name">${esc(item.name)}</div>
-     <div class="price">${money(item.price)}</div>
-    </div>
-   </div>
-
-   <div class="controls">
-    <button data-id="${esc(item.id)}" data-change="-1">−</button>
-    <span class="qty">${selected[item.id]||0}</span>
-    <button class="plus"
-     data-id="${esc(item.id)}" data-change="1">+</button>
-   </div>
-  </div>
- `).join("");
-
- $("items").querySelectorAll("[data-change]").forEach(button=>{
-  button.addEventListener("click",()=>{
-   updateQty(button.dataset.id,Number(button.dataset.change));
-  });
- });
+ renderHero();const list=menuItems.filter(i=>i.category===currentCategory);
+ if(!list.length){$("items").innerHTML='<div class="status">No food items in this category.</div>';return}
+ $("items").innerHTML=list.map(i=>`<div class="item"><div class="item-info">${i.photo?`<img class="food-photo" src="${esc(i.photo)}" alt="${esc(i.name)}" loading="lazy">`:""}<div><div class="name">${esc(i.name)}</div><div class="price">${money(i.price)}</div></div></div><div class="controls"><button aria-label="Remove one" data-id="${esc(i.id)}" data-change="-1">−</button><span class="qty">${selected[i.id]||0}</span><button class="plus" aria-label="Add one" data-id="${esc(i.id)}" data-change="1">+</button></div></div>`).join("");
+ $("items").querySelectorAll("[data-change]").forEach(b=>b.addEventListener("click",()=>updateQty(b.dataset.id,Number(b.dataset.change))));
 }
-
-function updateQty(id,change){
-
- const item=menuItems.find(i=>String(i.id)===String(id));
- if(!item)return;
-
- selected[id]=Math.max(0,Math.min(
-  99,(selected[id]||0)+change
- ));
-
- if(selected[id]===0)delete selected[id];
-
- renderItems();
- updateTotal();
-}
-
-// TOTAL
-
-function getTotal(){
- return menuItems.reduce((sum,item)=>{
-  return sum+(selected[item.id]||0)*Number(item.price);
- },0);
-}
-
-function updateTotal(){
-
- const count=Object.values(selected).reduce(
-  (sum,qty)=>sum+qty,0
- );
-
- $("count").textContent=count;
- $("total").textContent=money(getTotal());
-}
-
-// ORDER PREVIEW
-
-function showOrder(){
-
- const chosen=menuItems.filter(i=>selected[i.id]>0);
-
- if(!chosen.length){
-  alert("Please select an item first!");
-  return;
- }
-
- $("orderList").innerHTML=chosen.map(item=>`
-  <div class="line">
-   <span>${esc(item.name)} × ${selected[item.id]}</span>
-   <b>${money(Number(item.price)*selected[item.id])}</b>
-  </div>
- `).join("");
-
- $("finalTotal").textContent=money(getTotal());
- $("modal").classList.add("show");
-}
-
-// SEND ORDER TO THIS RESTAURANT
-
+function updateQty(id,d){const item=menuItems.find(i=>String(i.id)===String(id));if(!item)return;selected[id]=Math.max(0,Math.min(99,(selected[id]||0)+d));if(!selected[id])delete selected[id];renderItems();updateTotal()}
+function total(){return menuItems.reduce((s,i)=>s+(selected[i.id]||0)*Number(i.price),0)}
+function updateTotal(){$("count").textContent=Object.values(selected).reduce((s,n)=>s+n,0);$("total").textContent=money(total())}
+function showOrder(){const chosen=menuItems.filter(i=>selected[i.id]>0);if(!chosen.length){alert("Please select an item first!");return}$("orderList").innerHTML=chosen.map(i=>`<div class="line"><span>${esc(i.name)} × ${selected[i.id]}</span><b>${money(Number(i.price)*selected[i.id])}</b></div>`).join("");$("finalTotal").textContent=money(total());$("modal").classList.add("show")}
+function indianNumber(v){let n=String(v||"").replace(/\D/g,"");if(n.startsWith("0091"))n=n.slice(2);if(n.startsWith("91")&&n.length===12)return n;if(n.startsWith("0")&&n.length===11)n=n.slice(1);if(n.length===10)return "91"+n;return n}
 function sendWhatsApp(){
-
- const number=String(restaurant?.whatsapp||"")
-  .replace(/\D/g,"");
-
- if(!number){
-  alert("Restaurant WhatsApp number is missing.");
-  return;
- }
-
- const chosen=menuItems.filter(i=>selected[i.id]>0);
-
- if(!chosen.length)return;
-
- const lines=chosen.map((item,index)=>
-  `${index+1}. ${item.name} x ${selected[item.id]} = ${
-   money(Number(item.price)*selected[item.id])
-  }`
- );
-
- const message=
-  `*New Food Order - ${restaurant.name}*\n\n`+
-  lines.join("\n")+
-  `\n\n*Total: ${money(getTotal())}*`;
-
- const whatsappURL=
-  "https://wa.me/"+number+"?text="+encodeURIComponent(message);
-
- window.open(whatsappURL,"_blank");
+ const number=indianNumber(restaurant?.whatsapp);
+ if(!/^[1-9]\d{9,14}$/.test(number)){alert("Restaurant WhatsApp number is missing or invalid. Please ask the owner to update it.");return}
+ const chosen=menuItems.filter(i=>selected[i.id]>0);if(!chosen.length)return;
+ const lines=chosen.map((i,n)=>`${n+1}. ${i.name} x ${selected[i.id]} = ${money(Number(i.price)*selected[i.id])}`);
+ const msg=`*New Food Order - ${restaurant.name}*\n\n${lines.join("\n")}\n\n*Total: ${money(total())}*`;
+ window.open("https://wa.me/"+number+"?text="+encodeURIComponent(msg),"_blank");
 }
-
-function closeOrder(){
- $("modal").classList.remove("show");
-}
-
-// START
-
-loadMenu().catch(error=>{
- console.error("MENU ERROR:",error);
-
- $("items").innerHTML=`
-  <div class="status">${esc(error.message)}</div>
- `;
- $("tabs").innerHTML="";
- $("heading").textContent="Menu unavailable";
-});
-
+function closeOrder(){$("modal").classList.remove("show")}
+loadMenu().catch(err=>{$("items").innerHTML=`<div class="status">${esc(err.message)}</div>`;$("tabs").innerHTML="";$("categoryHero").innerHTML="";console.error("MENU ERROR:",err)});
 </script>
 </body>
 </html>
